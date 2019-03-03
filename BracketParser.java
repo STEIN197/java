@@ -90,6 +90,10 @@ public class BracketParser{
 		public final char start;
 		public final char end;
 
+		/**
+		 * Создаёт пару открывающих/закрывающих скобок.
+		 * @param brace Одна из констант {@code BracketParser.BRACE_*}
+		 */
 		public BracePair(byte brace) throws ParseException{
 			switch(brace){
 				case BracketParser.BRACE_ROUND:

@@ -15,4 +15,9 @@ public class JSONLong extends JSONEntity{
 	public JSONLong(String value){
 		this.value = Long.valueOf(value);
 	}
+
+	@Override
+	public String toString(){
+		return this.value.toString();
+	}
 }

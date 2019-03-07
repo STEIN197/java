@@ -4,11 +4,11 @@ import java.util.LinkedList;
 
 public class JSONList extends JSONEntity{
 	public final JSONType type = JSONType.LIST;
-	private LinkedList<JSONEntity> value;
+	public final LinkedList<JSONEntity> value;
 
-	public JSONList(String data){
-		this.value = JSONList.parse(data);
-	}
+	// public JSONList(String data){
+	// 	this.value = JSONList.parse(data);
+	// }
 
 	public JSONList(LinkedList<JSONEntity> data){
 		this.value = data;
@@ -18,17 +18,17 @@ public class JSONList extends JSONEntity{
 		this.value = new LinkedList<>();
 	}
 
-	public void add(JSONEntity e){
-		this.value.add(e);
+	@Override
+	public String toString(){
+		StringBuilder result = new StringBuilder();
+		result.append('[');
+		for(JSONEntity element : this.value){
+			result.append(element);
+			result.append(',');
+		}
+		if(this.value.size() > 0)
+			result.deleteCharAt(result.length() - 1);
+		result.append(']');
+		return result.toString();
 	}
-
-	public JSONEntity remove(int index){
-		return this.value.remove(index);
-	}
-
-	public int size(){
-		return this.value.size();
-	}
-
-	public static LinkedList<JSONEntity> parse(String data){}
 }

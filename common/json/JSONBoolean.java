@@ -16,4 +16,14 @@ public class JSONBoolean extends JSONEntity{
 	public JSONBoolean(String value){
 		this.value = Boolean.valueOf(value);
 	}
+	
+	@Override
+	public String toString(){
+		return this.value.toString();
+	}
+
+	@Override
+	public JSONBoolean clone(){
+		return new JSONBoolean(this.value.booleanValue());
+	}
 }

@@ -3,7 +3,7 @@ package common.json;
 import java.util.HashMap;
 import java.util.Map;
 
-public class JSONObject{
+public class JSONObject extends JSONComplex{
 	public final JSONType type = JSONType.OBJECT;
 	public final HashMap<String, JSONEntity> value;
 
@@ -39,5 +39,20 @@ public class JSONObject{
 	public String prettify(){
 		StringBuilder result = new StringBuilder();
 		return result.toString();
+	}
+
+	@Override
+	protected void add(String key, JSONEntity value){
+		this.value.put(key, value);
+	}
+
+	@Override
+	protected int size(){
+		return this.value.size();
+	}
+
+	@Override
+	protected JSONType getType(){
+		return this.type;
 	}
 }

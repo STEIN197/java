@@ -2,7 +2,7 @@ package common.json;
 
 import java.util.LinkedList;
 
-public class JSONList extends JSONEntity{
+public class JSONList extends JSONComplex{
 	public final JSONType type = JSONType.LIST;
 	public final LinkedList<JSONEntity> value;
 
@@ -30,5 +30,20 @@ public class JSONList extends JSONEntity{
 			result.deleteCharAt(result.length() - 1);
 		result.append(']');
 		return result.toString();
+	}
+
+	@Override
+	protected void add(String key, JSONEntity value){
+		this.value.add(value);
+	}
+
+	@Override
+	protected int size(){
+		return this.value.size();
+	}
+
+	@Override
+	protected JSONType getType(){
+		return this.type;
 	}
 }

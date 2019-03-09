@@ -1,13 +1,9 @@
 package common.json;
 
 import java.text.ParseException;
+import static common.json.Parser.*;
 
 public class ListParser {
-	private static final byte C_START = 0;
-	private static final byte C_BEFORE_VALUE = 1;
-	private static final byte C_VALUE = 2;
-	private static final byte C_AFTER_VALUE = 3;
-	private static final byte C_END = 4;
 
 	private static final String KEYWORD_TRUE = "true";
 	private static final String KEYWORD_FALSE = "false";
@@ -16,7 +12,7 @@ public class ListParser {
 	public final String raw;
 
 	private byte cursor = C_START;
-	private int position = 0;
+	private int pos = 0;
 	private JSONList data = new JSONList();
 	private int depth = 0;
 
@@ -27,11 +23,16 @@ public class ListParser {
 		this.raw = data;
 	}
 
+	public ListParser(String data, int pos){
+		this(data);
+		this.pos = pos;
+	}
+
 	public JSONList parse() throws ParseException{
 		int l = this.raw.length();
 		char c;
-		for(; this.position < l; this.position++){
-			c = this.raw.charAt(this.position);
+		for(; this.pos < l; this.pos++){
+			c = this.raw.charAt(this.pos);
 			switch(this.cursor){
 				case C_START:
 					this.checkStart(c);
@@ -50,7 +51,7 @@ public class ListParser {
 					break;
 			}
 		}
-		this.position = 0;
+		this.pos = 0;
 		this.cursor = C_START;
 		return this.data;
 	}
@@ -96,7 +97,7 @@ public class ListParser {
 			this.throwException(c, "Expected value start or closing brace");
 		} else {
 			this.cursor = C_VALUE;
-			this.position--;
+			this.verifyValue(c);
 		}
 	}
 
@@ -182,7 +183,7 @@ public class ListParser {
 				if(isDigit(c) || c == '.'){
 					this.currentValue.append(c);
 				} else {
-					this.position--;
+					this.pos--;
 					this.submitValue();
 				}
 				break;
@@ -193,12 +194,15 @@ public class ListParser {
 					this.currentValue.append(c);
 				break;
 			case LIST:
-				// this.currentValue.append(c);
-				// if(c == '['){
-				// 	this.depth++;
-				// } else if(c == ']'){
-				// 	this.depth--;
-				// }
+				this.currentValue.append(c);
+				if(c == '['){
+					this.depth++;
+				} else if(c == ']'){
+					this.depth--;
+				}
+				if(this.depth == 0){
+					this.submitValue();
+				}
 		}
 	}
 
@@ -227,18 +231,17 @@ public class ListParser {
 	}
 
 	private void throwException(char c) throws ParseException {
-		throw new ParseException("Unexpected token \"" + c + "\" at position " + this.position, position);
+		throw new ParseException("Unexpected token \"" + c + "\" at position " + this.pos, pos);
 	}
 
 	private void throwException(char c, String additional) throws ParseException {
-		throw new ParseException("Unexpected token \"" + c + "\" at position " + this.position + ". " + additional, position);
-	}
-
-	private static boolean isWhitespace(char c){
-		return c == ' ' || c == '\t' || c == '\n' || c == '\r' || c == '\0';
+		throw new ParseException("Unexpected token \"" + c + "\" at position " + this.pos + ". " + additional, pos);
 	}
 
 	private static boolean isDigit(char c){
 		return '0' <= c && c <= '9';
+	}
+	private static boolean isWhitespace(char c){
+		return c == ' ' || c == '\t' || c == '\n' || c == '\r' || c == '\0';
 	}
 }

@@ -26,7 +26,7 @@ public class Matrix implements Cloneable, Printable {
 	 * Создаёт матрицу с уже предопределёнными числовыми значениями
 	 * @param matrix Двумерный массив числовых значений
 	 */
-	public Matrix(double[][] matrix) {
+	public Matrix(double[][] matrix){
 		this.matrix = matrix;
 		this.rows = matrix.length;
 		this.cols = matrix[0].length;
@@ -37,7 +37,7 @@ public class Matrix implements Cloneable, Printable {
 	 * @param rows Количество строк
 	 * @param cols Количество столбцов
 	 */
-	public Matrix(int rows, int cols) {
+	public Matrix(int rows, int cols){
 		this.matrix = new double[rows][cols];
 		this.rows = rows;
 		this.cols = cols;

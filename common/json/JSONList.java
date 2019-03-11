@@ -1,5 +1,6 @@
 package common.json;
 
+import java.text.ParseException;
 import java.util.LinkedList;
 
 public class JSONList extends JSONComplex{
@@ -45,5 +46,14 @@ public class JSONList extends JSONComplex{
 	@Override
 	protected JSONType getType(){
 		return this.type;
+	}
+
+	/**
+	 * Создаёт список из JSON-строки
+	 * @param data Список в виде JSON-строки
+	 * @throws ParseException В случае невалидных данных
+	 */
+	public static JSONList fromString(String data) throws ParseException {
+		return (JSONList) new Parser(data).parse();
 	}
 }

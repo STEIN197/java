@@ -1,20 +1,21 @@
 package common.json;
 
-import java.util.HashMap;
+import java.text.ParseException;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class JSONObject extends JSONComplex{
 	public final JSONType type = JSONType.OBJECT;
-	public final HashMap<String, JSONEntity> value;
+	public final LinkedHashMap<String, JSONEntity> value;
 
 	// public JSONObject(String data){
 	// 	this.value = JSONObject.parse(data);
 	// }
-	public JSONObject(HashMap<String, JSONEntity> data){
+	public JSONObject(LinkedHashMap<String, JSONEntity> data){
 		this.value = data;
 	}
 	public JSONObject(){
-		this.value = new HashMap<>();
+		this.value = new LinkedHashMap<>();
 	}
 
 	@Override
@@ -54,5 +55,14 @@ public class JSONObject extends JSONComplex{
 	@Override
 	protected JSONType getType(){
 		return this.type;
+	}
+
+	/**
+	 * Создаёт объект из JSON-строки
+	 * @param data Объект в виде JSON-строки
+	 * @throws ParseException В случае невалидных данных
+	 */
+	public static JSONObject fromString(String data) throws ParseException {
+		return (JSONObject) new Parser(data).parse();
 	}
 }

@@ -1,10 +1,12 @@
 package common.json;
 
 import java.text.ParseException;
-import java.util.ArrayList;
 
-import javax.lang.model.util.ElementScanner6;
-
+/**
+ * Разбирает входную строку JSON-данных в структуры {@code JSONList} или {@code JSONObject}.
+ * При этом если есть вложенные структуры, то парсер разбирает их рекурсивно.
+ * Разбор происходит посимвольно
+ */
 public class Parser{
 
 	/** Позиция курсора до начала данных (до [ или до {) */
@@ -31,7 +33,6 @@ public class Parser{
 	/** Ключевое слово {@code false} которое не оборачивается в кавычки в JSON-структуре */
 	private static final String KEYWORD_FALSE = "false";
 
-
 	/** Первоначальная строка данных */
 	public final String raw;
 
@@ -50,10 +51,19 @@ public class Parser{
 	/** Тип текущего значения */
 	private JSONType currentType = null;
 
+	/**
+	 * Создаёт экземпляр парсера
+	 * @param data Валидная JSON-строка данных
+	 */
 	public Parser(String data){
 		this.raw = data;
 	}
 
+	/**
+	 * Начинает разбор JSON-строки
+	 * @return Один из объектов {@code JSONList} или {@JSONObject}
+	 * @throws ParseException Если входная строка оказалась невалидной
+	 */
 	public JSONComplex parse() throws ParseException {
 		for(char c : this.raw.toCharArray()){
 			switch(this.cursor){
@@ -67,18 +77,23 @@ public class Parser{
 					break;
 				case C_KEY:
 					this.recordKey(c);
+					// System.out.println("C_KEY");
 					break;
 				case C_AFTER_KEY:
 					this.checkAfterKey(c);
+					// System.out.println("C_AFTER_KEY");
 					break;
 				case C_BEFORE_VALUE:
 					this.checkBeforeValue(c);
+					// System.out.println("C_BEFORE_VALUE");
 					break;
 				case C_VALUE:
 					this.verifyValue(c);
+					// System.out.println("C_VALUE");
 					break;
 				case C_AFTER_VALUE:
 					this.checkAfterValue(c);
+					// System.out.println("C_AFTER_VALUE");
 					break;
 				case C_END:
 					this.checkEnd(c);
@@ -89,6 +104,8 @@ public class Parser{
 		}
 		if(this.cursor == C_START)
 			throw new ParseException("Empty string", this.pos);
+		if(this.cursor != C_END)
+			throw new ParseException("Unexpected end of input. Expected " + (this.data.getType() == JSONType.LIST ? ']' : '}'), this.pos);
 		this.pos = 0;
 		this.cursor = C_START;
 		return this.data;
@@ -133,7 +150,7 @@ public class Parser{
 			if(isEmpty){
 				this.cursor = C_END;
 			} else {
-				this.throwException(c, "Expected double quote");
+				this.throwException(c, "Expected double quote or closing brace");
 			}
 		}
 	}
@@ -178,28 +195,38 @@ public class Parser{
 			case NUMBER:
 				if(isDigit(c)){
 					this.currentValue.append(c);
-				} else if(c == '.') {
-					if(this.currentValue.indexOf(".") < 0)
-						this.currentValue.append(c);
-					else
-						this.throwException(c, "There is more than one decimal point in number");
-				} else if(c == ',') {
-					if(this.currentValue.charAt(this.currentValue.length() - 1) != '.'){
-						this.submitValue();
-						if(this.data.getType() == JSONType.LIST)
-							this.cursor = C_BEFORE_VALUE;
-						else
-							this.cursor = C_BEFORE_KEY;
-					} else {
-						this.throwException(c, "Expected digit token");
-					}
-				} else if(isWhitespace(c)) {
+				} else if(isWhitespace(c)){
 					if(this.currentValue.charAt(this.currentValue.length() - 1) != '.')
 						this.submitValue();
 					else
 						this.throwException(c, "Expected digit token");
 				} else {
-					this.throwException(c);
+					switch(c){
+						case '.':
+							if(this.currentValue.indexOf(".") < 0)
+								this.currentValue.append(c);
+							else
+								this.throwException(c, "There is more than one decimal point in number");
+							break;
+						case ',':
+							if(this.currentValue.charAt(this.currentValue.length() - 1) != '.'){
+								this.submitValue();
+								if(this.data.getType() == JSONType.LIST)
+									this.cursor = C_BEFORE_VALUE;
+								else
+									this.cursor = C_BEFORE_KEY;
+							} else {
+								this.throwException(c, "Expected digit token");
+							}
+							break;
+						case ']':
+						case '}':
+							this.submitValue();
+							this.cursor = C_END;
+							break;
+						default:
+							this.throwException(c);
+					}
 				}
 				break;
 			case STRING:
@@ -220,6 +247,7 @@ public class Parser{
 					this.depth--;
 				if(this.depth == 0)
 					this.submitValue();
+				break;
 			case OBJECT:
 				this.currentValue.append(c);
 				if(c == '{')
@@ -228,6 +256,7 @@ public class Parser{
 					this.depth--;
 				if(this.depth == 0)
 					this.submitValue();
+				break;
 		}
 	}
 
@@ -341,7 +370,7 @@ public class Parser{
 				this.data.add(key, new JSONNumber(value));
 				break;
 			case STRING:
-				this.data.add(key, new JSONString(this.currentValue.toString()));
+				this.data.add(key, new JSONString(value));
 				break;
 			case LIST:
 				this.data.add(key, (JSONList) new Parser(value).parse());

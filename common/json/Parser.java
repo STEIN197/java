@@ -10,21 +10,21 @@ import java.text.ParseException;
 public class Parser{
 
 	/** Позиция курсора до начала данных (до [ или до {) */
-	protected static final byte C_START = 0;
+	private static final byte C_START = 0;
 	/** Позиция курсора до начала имени ключа (если строка это объект) */
-	protected static final byte C_BEFORE_KEY = 1;
+	private static final byte C_BEFORE_KEY = 1;
 	/** Позиция курсора внутри имени ключа (если строка это объект) */
-	protected static final byte C_KEY = 2;
+	private static final byte C_KEY = 2;
 	/** Позиция курсора после имени ключа (если строка это объект) */
-	protected static final byte C_AFTER_KEY = 3;
+	private static final byte C_AFTER_KEY = 3;
 	/** Позиция курсора перед значением */
-	protected static final byte C_BEFORE_VALUE = 4;
+	private static final byte C_BEFORE_VALUE = 4;
 	/** Позиция курсора внутри значениея */
-	protected static final byte C_VALUE = 5;
+	private static final byte C_VALUE = 5;
 	/** Позиция курсора после значения */
-	protected static final byte C_AFTER_VALUE = 6;
+	private static final byte C_AFTER_VALUE = 6;
 	/** Позиция курсора после окончания данных (после ] или }) */
-	protected static final byte C_END = 7;
+	private static final byte C_END = 7;
 
 	/** Ключевое слово {@code null} которое не оборачивается в кавычки в JSON-структуре */
 	private static final String KEYWORD_NULL = "null";

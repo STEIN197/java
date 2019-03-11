@@ -1,5 +1,8 @@
 package common.json;
 
+/**
+ * Обёртка для логических значений в JSON-структурах
+ */
 public class JSONBoolean extends JSONEntity{
 
 	public final JSONType type = JSONType.BOOLEAN;

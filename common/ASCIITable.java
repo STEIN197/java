@@ -3,30 +3,28 @@ package common;
 import java.util.ArrayList;
 import java.io.PrintStream;
 
-public class ASCIITable{
+public class ASCIITable implements Printable {
 
 	/** Выравнивание содержимого по верхнему краю */
-	public static final int ALIGN_TOP = 0b0001;
+	public static final byte ALIGN_TOP = 0b0001;
 	/** Выравнивание содержимого по правому краю */
-	public static final int ALIGN_RIGHT = 0b0010;
+	public static final byte ALIGN_RIGHT = 0b0010;
 	/** Выравнивание содержимого по нижнему краю */
-	public static final int ALIGN_BOTTOM = 0b0100;
+	public static final byte ALIGN_BOTTOM = 0b0100;
 	/** Выравнивание содержимого по левому краю */
-	public static final int ALIGN_LEFT = 0b1000;
+	public static final byte ALIGN_LEFT = 0b1000;
 
 	/** Количество колонок в таблице. Минимальное количество колонок в таблице - 1 */
 	public final int cols;
 
-	/** Отступы в пробелах справа и слева от границ каждой ячейки. По умолчанию отступов равен 1 */
-	private int padding = 1;
 	/** Строки таблицы */
 	private ArrayList<String[]> rows = new ArrayList<>();
-	/** Массив размерностью с {@link #cols}.Каждый элемент массива хранит в себе максимальную длину значения для соответствующего столбца */
+	/** Массив размерностью с {@link #cols}. Каждый элемент массива хранит в себе максимальную длину значения для соответствующего столбца */
 	private int[] maxWidth;
 	/** Массив размерностью с {@link #cols}, хранящий фиксированные значения ширины столбцов */
 	private int[] colWidth;
 	/** Массив размерностью с {@link #cols} содержащий настройки выравнивания для каждого столбца */
-	private int[] alignment;
+	private byte[] alignment;
 
 	/**
 	 * Создаёт ascii-таблицу с указанным количеством колонок.
@@ -37,37 +35,39 @@ public class ASCIITable{
 		this.cols = cols < 1 ? 1 : cols;
 		this.maxWidth = new int[this.cols];
 		this.colWidth = new int[this.cols];
-		this.alignment = new int[this.cols];
+		this.alignment = new byte[this.cols];
 		this.setAlignment(ASCIITable.ALIGN_LEFT);
 	}
 
 	/**
 	 * Добавляет одну строку в конец таблицы. Каждый аргумент соответствует своему столбцу.
-	 * Если количество аргументов больше чем количество столбцов в таблице, то последние значения отбрасываются.
-	 * Если же количество аргументов меньше чем количество столбцов в таблице, то недостающие ячейки просто заполняются пустыми значениями
-	 * @param cols Данные для заполнения строки
-	 * @return Ссылку на таблицу
+	 * Если количество аргументов больше чем количество столбцов в таблице,
+	 * то последние значения отбрасываются. Если же количество аргументов меньше,
+	 * чем количество столбцов в таблице, то недостающие ячейки просто заполняются пустыми значениями.
+	 * @param row Данные для заполнения строки
+	 * @return Текущую таблицу
 	 */
-	public ASCIITable addRow(String ...cols){
-		String[] row = new String[this.cols];
+	public ASCIITable addRow(String ...row){
+		String[] rowToInsert = new String[this.cols];
 		for(int i = 0; i < this.cols; i++){
 			try{
-				row[i] = cols[i];
-			} catch (ArrayIndexOutOfBoundsException ex){
-				row[i] = "";
+				rowToInsert[i] = row[i];
+			} catch (ArrayIndexOutOfBoundsException ex) {
+				rowToInsert[i] = "";
 			}
-			int l = row[i].length();
+			int l = rowToInsert[i].length();
 			if(this.maxWidth[i] < l)
 				this.maxWidth[i] = l;
 		}
-		this.rows.add(row);
+		this.rows.add(rowToInsert);
 		return this;
 	}
 
+	@Override
 	public void print(PrintStream out){
 		StringBuilder output = new StringBuilder();
-		int rows = this.rows.size();
-		for(int i = 0; i < rows; i++){
+		int rowsCount = this.rows.size();
+		for(int i = 0; i < rowsCount; i++){
 			this.drawBorder(output);
 			this.drawRow(output, i);
 		}
@@ -75,36 +75,25 @@ public class ASCIITable{
 		out.println(output);
 	}
 
-	public void print(){
-		this.print(System.out);
-	}
-	
-	/**
-	 * Устанавливает горизонтальные отступы содержимого от границ ячейки.
-	 * Значение при этом устанавливается одинаковым как для левого отступа, так и для правого
-	 * @param padding Отступ. Если значение меньше 0, то по умолчанию устанавливается в 0
-	 */
-	public void setPadding(int padding){
-		this.padding = padding < 0 ? 0 : padding;
-	}
-
 	/**
 	 * Устанавливает выраванивание содержимого для указанного столбца.
-	 * При этом выравнивание может быть как горизонтальным, так и вертикальным, а также и тем и другим.
-	 * Для этого нужно использовать маски выравниваний, например:
+	 * При этом выравнивание может быть как горизонтальным,
+	 * так и вертикальным, а также и тем и другим.
+	 * Для этого можно использовать маски выравниваний, например:
 	 * <pre>
 	 * ASCIITable t = new ASCIITable(3);
 	 * t.setAlignment(1, ASCIITable.ALIGN_LEFT | ASCIITable.ALIGN_RIGHT); // Выравнивание по центру по горизонтали для центральной колонки
 	 * t.setAlignment(0, ASCIITable.ALIGN_TOP | ASCIITable.ALIGN_BOTTOM); // Выравнивание по центру по вертикали для первой колонки
 	 * </pre>
 	 * @param index Номер столбца для которого указывается выравнивание
-	 * @param alignment Выравнивание. Одна из четырёх констант {@code ASCIITAble.ALIGN_*}, либо комбинация из нескольких
+	 * @param alignment Выравнивание. Одна из четырёх констант {@code ASCIITAble.ALIGN_*},
+	 *                  либо комбинация из нескольких
 	 * @throws ArrayIndexOutOfBoundsException Если столбца с указанным смещением не существует
 	 */
-	public void setAlignment(int index, int alignment) throws ArrayIndexOutOfBoundsException{
+	public void setAlignment(int index, byte alignment) throws ArrayIndexOutOfBoundsException{
 		try{
 			this.alignment[index] = alignment;
-		} catch(ArrayIndexOutOfBoundsException ex){
+		} catch(ArrayIndexOutOfBoundsException ex) {
 			throw new ArrayIndexOutOfBoundsException("There is no such column with offset " + index);
 		}
 	}
@@ -112,9 +101,9 @@ public class ASCIITable{
 	/**
 	 * Устанавливает одинаковое выравнивание для всех столбцов таблицы
 	 * @param alignment Выравнивание. Одна из четырёх констант {@code ASCIITAble.ALIGN_*}, либо комбинация из нескольких
-	 * @see #setAlignment(int, int)
+	 * @see #setAlignment(int, byte)
 	 */
-	public void setAlignment(int alignment){
+	public void setAlignment(byte alignment){
 		for(int i = 0; i < this.cols; i++)
 			this.alignment[i] = alignment;
 	}
@@ -126,8 +115,8 @@ public class ASCIITable{
 	 * @param size Ширина столбца. Если она меньше нуля, то выставляется 0 (по умолчанию)
 	 * @throws ArrayIndexOutOfBoundsException Если столбца с указанным смещением не существует
 	 */
-	public void setColWidth(int index, int size) throws ArrayIndexOutOfBoundsException{
-		try{
+	public void setColWidth(int index, int size) throws ArrayIndexOutOfBoundsException {
+		try {
 			this.colWidth[index] = size < 0 ? 0 : size;
 		} catch(ArrayIndexOutOfBoundsException ex){
 			throw new ArrayIndexOutOfBoundsException("There is no such column with offset " + index);
@@ -153,13 +142,10 @@ public class ASCIITable{
 	 * <p>
 	 * При этом граница всегда оканчиваниется символом новой строки {@code \n}
 	 * @param output Строка к которой конкатенируется результат
-	 * @see #print(PrintStream)
 	 */
 	private void drawBorder(StringBuilder output){
-		int width;
-		int padding = this.padding * 2;
 		for(int i = 0; i < this.cols; i++){
-			width = padding + (this.colWidth[i] == 0 ? this.maxWidth[i] : this.colWidth[i]);
+			int width = this.getColWidth(i);
 			output.append('+');
 			for(int j = 0; j < width; j++)
 				output.append('-');
@@ -180,6 +166,16 @@ public class ASCIITable{
 			// Do smth
 		}
 		output.append(rowString);
+	}
+
+	/**
+	 * Возвращает ширину указанного столбца, которая будет
+	 * выведена в консоль.
+	 * @param index Индекс столбца, выводимую ширину которого нужно вывести
+	 * @return Ширину столбца
+	 */
+	private int getColWidth(int index){
+		return this.colWidth[index] > 0 ? this.colWidth[index] : this.maxWidth[index];
 	}
 
 	/**
@@ -205,17 +201,6 @@ public class ASCIITable{
 		}
 		return totalCount;
 	}
-
-	// private String[][] prepareCells(int index, int height){
-	// 	String[][] cells = new String[this.cols][height];
-	// 	String[] row = this.rows.get(index);
-	// 	int width;
-	// 	for(int i = 0; i < this.cols; i++){
-	// 		width = this.colWidth[i] == 0 ? this.maxWidth[i] : this.colWidth[i];
-
-	// 	}
-	// 	return cells;
-	// }
 
 	/**
 	 * Возвращает количество строк, которые бы получились,

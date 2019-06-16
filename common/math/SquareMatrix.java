@@ -35,9 +35,10 @@ public class SquareMatrix extends Matrix {
 				return this.dt = this.getQuadraticDt();
 			case 3:
 				return this.dt = this.getCubicDt();
-			default:
-				return this.dt = this.getCommonDt();
+			// default:
+			// 	return this.dt = this.getCommonDt();
 		}
+		return 0;
 	}
 
 	public double getDt(boolean recalc){
@@ -47,13 +48,13 @@ public class SquareMatrix extends Matrix {
 			return this.dt;
 	}
 
-	public boolean isIdentical(){
+	// public boolean isIdentical(){
 
-	}
+	// }
 
-	public SquareMatrix getReverse(){
+	// public SquareMatrix getReverse(){
 		
-	}
+	// }
 
 	/**
 	 * Возвращает детерминант для матрицы {@code 2x2}
@@ -79,7 +80,7 @@ public class SquareMatrix extends Matrix {
 		return (primaryD + primaryT1 + primaryT2) - (secondaryD + secondaryT1 + secondaryT2);
 	}
 
-	private double getCommonDt(){
+	// private double getCommonDt(){
 		
-	}
+	// }
 }

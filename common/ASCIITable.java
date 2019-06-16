@@ -3,16 +3,10 @@ package common;
 import java.util.ArrayList;
 import java.io.PrintStream;
 
+/**
+ * Простой класс для вывода табличных данных в консоль.
+ */
 public class ASCIITable implements Printable {
-
-	/** Выравнивание содержимого по верхнему краю */
-	public static final byte ALIGN_TOP = 0b0001;
-	/** Выравнивание содержимого по правому краю */
-	public static final byte ALIGN_RIGHT = 0b0010;
-	/** Выравнивание содержимого по нижнему краю */
-	public static final byte ALIGN_BOTTOM = 0b0100;
-	/** Выравнивание содержимого по левому краю */
-	public static final byte ALIGN_LEFT = 0b1000;
 
 	/** Количество колонок в таблице. Минимальное количество колонок в таблице - 1 */
 	public final int cols;
@@ -23,8 +17,6 @@ public class ASCIITable implements Printable {
 	private int[] maxWidth;
 	/** Массив размерностью с {@link #cols}, хранящий фиксированные значения ширины столбцов */
 	private int[] colWidth;
-	/** Массив размерностью с {@link #cols} содержащий настройки выравнивания для каждого столбца */
-	private byte[] alignment;
 
 	/**
 	 * Создаёт ascii-таблицу с указанным количеством колонок.
@@ -35,8 +27,16 @@ public class ASCIITable implements Printable {
 		this.cols = cols < 1 ? 1 : cols;
 		this.maxWidth = new int[this.cols];
 		this.colWidth = new int[this.cols];
-		this.alignment = new byte[this.cols];
-		this.setAlignment(ASCIITable.ALIGN_LEFT);
+	}
+
+	/**
+	 * Создаёт таблицу с предопределенными заголовками
+	 * @param thead Первая строка таблицы. Исходя из
+	 *              размера массива определяется количество колонок таблицы.
+	 */
+	public ASCIITable(String ...thead){
+		this(thead.length);
+		this.rows.add(thead);
 	}
 
 	/**
@@ -65,47 +65,14 @@ public class ASCIITable implements Printable {
 
 	@Override
 	public void print(PrintStream out){
-		StringBuilder output = new StringBuilder();
-		int rowsCount = this.rows.size();
+		var output = new StringBuilder();
+		var rowsCount = this.rows.size();
 		for(int i = 0; i < rowsCount; i++){
 			this.drawBorder(output);
 			this.drawRow(output, i);
 		}
 		this.drawBorder(output);
 		out.println(output);
-	}
-
-	/**
-	 * Устанавливает выраванивание содержимого для указанного столбца.
-	 * При этом выравнивание может быть как горизонтальным,
-	 * так и вертикальным, а также и тем и другим.
-	 * Для этого можно использовать маски выравниваний, например:
-	 * <pre>
-	 * ASCIITable t = new ASCIITable(3);
-	 * t.setAlignment(1, ASCIITable.ALIGN_LEFT | ASCIITable.ALIGN_RIGHT); // Выравнивание по центру по горизонтали для центральной колонки
-	 * t.setAlignment(0, ASCIITable.ALIGN_TOP | ASCIITable.ALIGN_BOTTOM); // Выравнивание по центру по вертикали для первой колонки
-	 * </pre>
-	 * @param index Номер столбца для которого указывается выравнивание
-	 * @param alignment Выравнивание. Одна из четырёх констант {@code ASCIITAble.ALIGN_*},
-	 *                  либо комбинация из нескольких
-	 * @throws ArrayIndexOutOfBoundsException Если столбца с указанным смещением не существует
-	 */
-	public void setAlignment(int index, byte alignment) throws ArrayIndexOutOfBoundsException{
-		try{
-			this.alignment[index] = alignment;
-		} catch(ArrayIndexOutOfBoundsException ex) {
-			throw new ArrayIndexOutOfBoundsException("There is no such column with offset " + index);
-		}
-	}
-
-	/**
-	 * Устанавливает одинаковое выравнивание для всех столбцов таблицы
-	 * @param alignment Выравнивание. Одна из четырёх констант {@code ASCIITAble.ALIGN_*}, либо комбинация из нескольких
-	 * @see #setAlignment(int, byte)
-	 */
-	public void setAlignment(byte alignment){
-		for(int i = 0; i < this.cols; i++)
-			this.alignment[i] = alignment;
 	}
 
 	/**
@@ -155,17 +122,17 @@ public class ASCIITable implements Printable {
 
 	/**
 	 * Выводит каждую строку таблицы
-	 * @param output Строка-таблица, к которой конкатенируется результат
-	 * @param row Значения ячеек
+	 * @param output Строка-таблица, с которой конкатенируется результат
+	 * @param index Номер выводимой строки
 	 */
 	private void drawRow(StringBuilder output, int index){
-		StringBuilder rowString = new StringBuilder();
-		String[] row = this.rows.get(index);
-		int height = this.getRowHeight(index);
-		for(int i = 0; i < this.cols; i++){
-			// Do smth
+		var data = this.getFormattedCells(index);
+		for(int i = 0; i < data[0].length; i++){
+			for(int j = 0; j < this.cols; j++){
+				output.append("|").append(data[j][i]);
+			}
+			output.append("|\n");
 		}
-		output.append(rowString);
 	}
 
 	/**
@@ -179,27 +146,60 @@ public class ASCIITable implements Printable {
 	}
 
 	/**
-	 * Возвращает максимальное количество текстовых строк в указанной строке таблицы,
-	 * если текст в ячейках дробится на несколько строк
-	 * @param index номер указанной строки
-	 * @return наибольшее количество строк текста в указанной строке таблицы
+	 * Возвращает минимальную высоту строки таблицы, нужную
+	 * для вмещения всех строк в ячеках.
+	 * @param index Индекс указанной строки
+	 * @return Наименьшую высоту строки для вмещения всего текста.
 	 */
 	private int getRowHeight(int index){
-		int colWidth;
 		String[] row = this.rows.get(index);
-		int l;
 		int totalCount = 1;
-		int linesPerCell;
 		for(int i = 0; i < this.cols; i++){
-			l = row[i].length();
-			colWidth = this.colWidth[i] == 0 ? l : this.colWidth[i];
-			if(l > colWidth){
-				linesPerCell = getLinesCount(row[i], colWidth);
+			var cellLength = row[i].length();
+			var colWidth = this.getColWidth(i);
+			if(cellLength > colWidth){
+				var linesPerCell = getLinesCount(row[i], colWidth);
 				if(linesPerCell > totalCount)
 					totalCount = linesPerCell;
 			}
 		}
 		return totalCount;
+	}
+
+	/**
+	 * Возвращает массив строк для строки {@code rowIndex} с отформатированными данными.
+	 * Полученный массив строк можно использовать для вставки в таблицу при выводе
+	 * на консоль
+	 * @param rowIndex Индекс форматируемой строки
+	 * @return Массив строк для вывода
+	 */
+	private String[][] getFormattedCells(int rowIndex){
+		var row = this.rows.get(rowIndex);
+		var height = this.getRowHeight(rowIndex);
+		var result = new String[this.cols][height];
+		for(int i = 0; i < this.cols; i++){
+			var cellText = row[i];
+			var colWidth = this.getColWidth(i);
+			for(int j = 0; j < height; j++){
+				String cellLine;
+				int beginIndex = j * colWidth;
+				int endIndex = beginIndex + colWidth;
+
+				if(endIndex <= cellText.length())
+					cellLine = cellText.substring(beginIndex, endIndex);
+				else if(beginIndex <= cellText.length())
+					cellLine = cellText.substring(beginIndex);
+				else
+					cellLine = "";
+
+				if(cellLine.length() < colWidth){
+					int spacesToInsert = colWidth - cellLine.length();
+					cellLine += " ".repeat(spacesToInsert);
+				}
+				result[i][j] = cellLine;
+			}
+		}
+		return result;
 	}
 
 	/**
@@ -211,23 +211,6 @@ public class ASCIITable implements Printable {
 	 * @return Количество строк занимаемых строкой {@code value} в колонке шириной {@code width}
 	 */
 	private static int getLinesCount(String value, int width){
-		double l = (double) value.length();
-		return (int) Math.ceil(l / width);
-	}
-
-	/**
-	 * Разбивает входную строку на массив строк таким образом,
-	 * чтобы каждая строка в возвращаемом массиве помещалась бы в колонку
-	 * шириной {@code width} пробелов
-	 * @param value Разбиваемая строка
-	 * @param width Ширина колонки
-	 * @return Массив строк, помещающихся в колонку шириной {@code width}
-	 */
-	private static String[] getLines(String value, int width){
-		int count = getLinesCount(value, width);
-		String[] lines = new String[count];
-		for(int i = 0; i < count; i++)
-			lines[i] = value.substring(i * width);
-		return lines;
+		return (int) Math.ceil((double) value.length() / width);
 	}
 }

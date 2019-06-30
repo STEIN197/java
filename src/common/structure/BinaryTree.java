@@ -1,4 +1,4 @@
-package common;
+package common.structure;
 
 public class BinaryTree<T extends Comparable<T>> {
 

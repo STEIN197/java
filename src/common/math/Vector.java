@@ -2,6 +2,9 @@ package common.math;
 
 /**
  * Representation of free vector.
+ * All the methods that take a vector as argument require
+ * the amount of dimensions of an instance and the argument to be equal.
+ * In other case, {@code IllegalArgumentException} is thrown ({@link Point#checkDimensions(Point)}).
  */
 public class Vector implements Cloneable {
 
@@ -27,9 +30,9 @@ public class Vector implements Cloneable {
 	}
 
 	/**
-	 * Creates a vector made from two points
-	 * @param p1
-	 * @param p2
+	 * Creates a vector made of two points.
+	 * @param p1 A point to be substracted from second.
+	 * @param p2 A point from which first is substracted.
 	 */
 	public Vector(Point p1, Point p2){
 		p1.checkDimensions(p2);
@@ -38,6 +41,10 @@ public class Vector implements Cloneable {
 			this.data.coordinates[i] = p2.coordinates[i] - p1.coordinates[i];
 	}
 
+	/**
+	 * Calculate length of a vector.
+	 * @return Length of a vector.
+	 */
 	public double getLength(){
 		var result = 0d;
 		for (double n : this.data.coordinates)
@@ -45,6 +52,11 @@ public class Vector implements Cloneable {
 		return Math.sqrt(result);
 	}
 
+	/**
+	 * Adds two vectors and produces the third one.
+	 * @param v A vector to which the instance adds.
+	 * @return A vector that is result of sum of initial vectors.
+	 */
 	public Vector add(Vector v){
 		this.data.checkDimensions(v.data);
 		var result = this.clone();
@@ -53,6 +65,11 @@ public class Vector implements Cloneable {
 		return result;
 	}
 
+	/**
+	 * Multiplies the coordinates of instance by {@code n}.
+	 * @param n A number by which coordinates of instance is multiplied.
+	 * @return The new vector.
+	 */
 	public Vector multiple(double n){
 		var result = this.clone();
 		for(int i = 0; i < result.data.coordinates.length; i++)
@@ -60,6 +77,11 @@ public class Vector implements Cloneable {
 		return result;
 	}
 
+	/**
+	 * Produces a dot product of two vectors.
+	 * @param v A vector by which the instance is producted.
+	 * @return A number that represents the multiplication of two vectors.
+	 */
 	public double dotProduct(Vector v){
 		this.data.checkDimensions(v.data);
 		var result = 0d;
@@ -68,6 +90,13 @@ public class Vector implements Cloneable {
 		return result;
 	}
 
+	/**
+	 * Produces a cross product (<a href="https://en.wikipedia.org/wiki/Cross_product">vector product</a>) of two vectors.
+	 * The operation is possible only on three-dimensional vectors.
+	 * @param v A vector by which the operation performs.
+	 * @return New vector that is a result of operation.
+	 */
+	// TODO 7-dimensional multiplication
 	public Vector crossProduct(Vector v){
 		this.data.checkDimensions(v.data);
 		if(this.data.coordinates.length != 3)
@@ -81,6 +110,10 @@ public class Vector implements Cloneable {
 		);
 	}
 
+	/**
+	 * Returns a unit vector from instance.
+	 * @return Unit vector.
+	 */
 	public Vector getUnit(){
 		double l = this.getLength();
 		var result = this.clone();
@@ -89,11 +122,22 @@ public class Vector implements Cloneable {
 		return result;
 	}
 
+	/**
+	 * Returns angle between two vectors in radians.
+	 * @param v A vector to which angle is calculated.
+	 * @return Angle in radians.
+	 */
 	public double getAngle(Vector v){
-		double cos = this.multiple(v) / (this.getLength() * v.getLength());
+		double cos = this.dotProduct(v) / (this.getLength() * v.getLength());
 		return Math.acos(cos);
 	}
 	
+	/**
+	 * Returns {@code true} if instance is collinear to {@code v} vector.
+	 * Zero vectors is collinear to any vector.
+	 * @param v A vector to which collinearity is calculated.
+	 * @return {@code} true if vectors are collinear to each other.
+	 */
 	public boolean isCollinear(Vector v){
 		if(this.isZero())
 			return true;
@@ -103,18 +147,33 @@ public class Vector implements Cloneable {
 	// TODO Complanarity
 	// public boolean isComplanar(Vector v){}
 
+	/**
+	 * Returns {@code true} if instance is collinear to {@code v}
+	 * and has the same direction as {@code v}.
+	 * @param v A vector to which direction compares.
+	 * @return {@code true} if vectors have same direction.
+	 */
 	public boolean hasSameDirection(Vector v){
-		return this.isCollinear(v) && this.multiple(v) > 0;
+		return this.isCollinear(v) && this.dotProduct(v) > 0;
 	}
 
+	/**
+	 * Returns {@code true} if instance is unit vector (length is 1).
+	 * @return {@code true} if length of instance is 1.
+	 */
 	public boolean isUnit(){
 		return this.getLength() == 1d;
 	}
 
+	/**
+	 * Returns {@code true} if instance is zero vector (length is 0).
+	 * @return {@code true} if length of instance is 0.
+	 */
 	public boolean isZero(){
 		return this.getLength() == 0d;
 	}
 
+	@Override
 	public Vector clone(){
 		return new Vector(this.data.coordinates);
 	}
@@ -124,6 +183,13 @@ public class Vector implements Cloneable {
 		return this.data.hashCode();
 	}
 
+	/**
+	 * Returns {@code true} if instance and {@code o} are equals.
+	 * This means that both vectors are collinear, have same direction
+	 * and have equal length. Equality of coordinates does not consider.
+	 * @param o A vector to which the instance compares.
+	 * @return {@code true} if mentioned conditions are met.
+	 */
 	@Override
 	public boolean equals(Object o){
 		if(o == null)

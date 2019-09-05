@@ -11,6 +11,14 @@ public class RegularTree<T> extends Tree<T> {
 
 		/**
 		 * {@inheritDoc}
+		 * @param node
+		 */
+		public Node(T node){
+			super(node);
+		}
+
+		/**
+		 * {@inheritDoc}
 		 */
 		@Override
 		public int getChildNodesCount(){
@@ -21,8 +29,30 @@ public class RegularTree<T> extends Tree<T> {
 		 * {@inheritDoc}
 		 */
 		@Override
-		public boolean isLeaf() {
-			return this.getChildNodesCount() == 0;
+		public void unleash(){
+			if(this.parent == null)
+				return;
+			this.removeNode(this);
+		}
+
+		/**
+		 * {@inheritDoc}
+		 * @param node {@inheritDoc}
+		 */
+		@Override
+		public common.structure.Node<T> removeNode(common.structure.Node<T> node){
+			this.children.remove(node);
+			node.parent = null;
+			return node;
+		}
+
+		public void addNode(Node<T> node){
+			this.children.add(node);
+			node.parent = this;
+		}
+
+		public void addNode(T node){
+			this.addNode(new Node<T>(node));
 		}
 	}
 }

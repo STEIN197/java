@@ -1,5 +1,7 @@
 package common.structure;
 
+import java.util.function.Function;
+
 /**
  * Basic interface for all tree data structures like
  * binary tree, binary search tree and etc.
@@ -34,4 +36,13 @@ public abstract class Tree<T> {
 	 * @return New tree retrieved from current.
 	 */
 	public abstract Tree<T> getSubtree(Node<T> node) throws Exception;
+
+	/**
+	 * Makes a tree traversal through all nodes in structure
+	 * and applies {@code fn} function to each node.
+	 * @param fn A function to be applied to each node.
+	 * @param indepth {@code true} if traversal is indepth,
+	 *                or breadth-first otherwise.
+	 */
+	public abstract void forEach(Function<T, T> fn, boolean indepth);
 }

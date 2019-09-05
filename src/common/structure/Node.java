@@ -8,9 +8,20 @@ package common.structure;
 public abstract class Node<T> {
 
 	/** Stores actual content of node. */
-	private T content;
+	protected T content;
 	/** Reference to a parent node or null if node has no parent. */
-	private Node<T> parent;
+	protected Node<T> parent;
+
+	/**
+	 * Creates a node with specified content and parent node.
+	 * @param content Object is stored inside node.
+	 * @param parent A node that is to be parent for current.
+	 *               {@code null} if node does not have parent.
+	 */
+	public Node(T content, Node<T> parent){
+		this.content = content;
+		this.parent = parent;
+	}
 
 	/**
 	 * Default constructor for nodes.
@@ -19,6 +30,8 @@ public abstract class Node<T> {
 	public Node(T content){
 		this.content = content;
 	}
+
+	public Node(){}
 
 	/**
 	 * Returns parent node for current node.
@@ -43,14 +56,28 @@ public abstract class Node<T> {
 	 */
 	public abstract int getChildNodesCount();
 
+	/**
+	 * Destroys bidirectional bonds between current node
+	 * and its parent. I.e. removes so-called "edge" between them.
+	 * Do nothing if node does not have parent.
+	 */
+	public abstract void unleash();
+
+	/**
+	 * Removes child node from current node.
+	 * @param node A node to be removed.
+	 * @return Removed node or null if supplied
+	 *         node does not equal to any of children.
+	 */
+	public abstract Node<T> removeNode(Node<T> node);
+
 	@Override
-	public int hashCode() {
+	public int hashCode(){
 		return this.content.hashCode();
 	}
 
 	@Override
-	public boolean equals(Object obj) {
+	public boolean equals(Object obj){
 		return this.content.equals(obj);
 	}
-
 }

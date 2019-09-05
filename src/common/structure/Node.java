@@ -22,7 +22,7 @@ public abstract class Node<T> {
 
 	/**
 	 * Returns parent node for current node.
-	 * Node cannot have more that one parent.
+	 * Node cannot have more than one parent.
 	 * @return Parent node for current node or null if node has no parent (i.e. it is root itself).
 	 */
 	public Node<T> getParent(){
@@ -33,7 +33,9 @@ public abstract class Node<T> {
 	 * Leaf node is a node that has no children.
 	 * @return {@code true} if current node is leaf.
 	 */
-	public abstract boolean isLeaf();
+	public boolean isLeaf(){
+		return this.getChildNodesCount() == 0;
+	}
 
 	/**
 	 * Returns an amount of children.

@@ -8,7 +8,7 @@ package common.structure;
 public abstract class Node<T> {
 
 	/** Stores actual content of node. */
-	protected T content;
+	public final T content;
 	/** Reference to a parent node or null if node has no parent. */
 	protected Node<T> parent;
 
@@ -31,22 +31,39 @@ public abstract class Node<T> {
 		this.content = content;
 	}
 
-	public Node(){}
+	public Node(){
+		this.content = null;
+	}
 
 	/**
 	 * Returns parent node for current node.
 	 * Node cannot have more than one parent.
 	 * @return Parent node for current node or null if node has no parent (i.e. it is root itself).
 	 */
-	public Node<T> getParent(){
+	public final Node<T> getParent(){
 		return this.parent;
+	}
+
+	/**
+	 * Returns top-level parent node that has no parent.
+	 * In tree, it means that {@code Node<T>.getRoot() == Tree<T>.getRoot()}.
+	 * @return Topest node that has no parent or null if current node
+	 *         does not have parent.
+	 */
+	public final Node<T> getRoot(){
+		if(this.parent == null)
+			return null;
+		var root = this.parent;
+		while(root.parent != null)
+			root = root.parent;
+		return root;
 	}
 
 	/**
 	 * Leaf node is a node that has no children.
 	 * @return {@code true} if current node is leaf.
 	 */
-	public boolean isLeaf(){
+	public final boolean isLeaf(){
 		return this.getChildNodesCount() == 0;
 	}
 
@@ -71,13 +88,19 @@ public abstract class Node<T> {
 	 */
 	public abstract Node<T> removeNode(Node<T> node);
 
+	public abstract Node<T> removeNode(T content);
+
+	public abstract boolean hasNode(Node<T> node);
+
+	public abstract Node<T>[] getChildren();
+
 	@Override
-	public int hashCode(){
+	public final int hashCode(){
 		return this.content.hashCode();
 	}
 
 	@Override
-	public boolean equals(Object obj){
+	public final boolean equals(Object obj){
 		return this.content.equals(obj);
 	}
 }

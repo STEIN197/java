@@ -157,9 +157,4 @@ public class RegularTree<T> extends Tree<T> {
 			return this.children.toArray(result);
 		}
 	}
-
-	@Override
-	public int getHeight() {
-		return 0;
-	}
 }

@@ -1,5 +1,6 @@
 package common.structure;
 
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
 /**
@@ -32,16 +33,27 @@ public abstract class Tree<T> {
 
 	/**
 	 * Returns height of a tree, starting from root node and
-	 * ending with deepest leaf node.
+	 * ending with deepest leaf node. To calculate it iterates all
+	 * the nodes in tree and calculate depth only of leaf nodes.
 	 * @return Height of tree.
 	 */
-	public abstract int getHeight();
+	public int getHeight(){
+		var height = new AtomicInteger(0);
+		this.traverse(node -> {
+			if(!node.isLeaf())
+				return;
+			var depth = node.getDepth();
+			if(depth > height.get())
+				height.set(depth);
+		}, TRAVERSE_BREADTH_FIRST);
+		return height.get();
+	}
 
 	/**
 	 * Returns root node of a tree.
 	 * @return Root node or null if tree is empty (i.e. it has no root).
 	 */
-	public Node<T> getRoot(){
+	public final Node<T> getRoot(){
 		return this.root;
 	}
 
@@ -76,7 +88,7 @@ public abstract class Tree<T> {
 	 *               one of {@code Tree<T>.TRAVERSE_*} constant. Otherwise does
 	 *               nothing.
 	 */
-	public void traverse(Consumer<Node<T>> fn, byte method){
+	public final void traverse(Consumer<Node<T>> fn, byte method){
 		if(this.root == null)
 			return;
 		switch(method){

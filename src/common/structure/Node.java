@@ -60,6 +60,23 @@ public abstract class Node<T> {
 	}
 
 	/**
+	 * Returns depth of the current node.
+	 * If it does not have parent then its depth is 1 (or if it root which might mean the same).
+	 * @return Depth of the node.
+	 */
+	public final int getDepth(){
+		int depth = 1;
+		if(this.parent == null)
+			return depth;
+		var root = this.parent;
+		while (root.parent != null) {
+			root = this.parent;
+			depth++;
+		}
+		return depth;
+	}
+
+	/**
 	 * Leaf node is a node that has no children.
 	 * @return {@code true} if current node is leaf.
 	 */

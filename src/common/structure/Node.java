@@ -105,10 +105,27 @@ public abstract class Node<T> {
 	 */
 	public abstract Node<T> removeNode(Node<T> node);
 
+	/**
+	 * Removes child node from current, if any of children
+	 * has content in way that expression {@code content.equals(node.content)}
+	 * evaluates to {@code true}. It is the same as {@link #removeNode(Node)},
+	 * except that argument is not wrapper.
+	 * @param content Node with this object inside will be removed.
+	 * @return Removed child or null if there is no child with {@code content} content.
+	 */
 	public abstract Node<T> removeNode(T content);
 
+	/**
+	 * Check if node has specified child.
+	 * @param node A node is considered as child of current node.
+	 * @return {@code true} if current node has {@code node} child.
+	 */
 	public abstract boolean hasNode(Node<T> node);
 
+	/**
+	 * Returns an array of children of current node.
+	 * @return An array.
+	 */
 	public abstract Node<T>[] getChildren();
 
 	@Override

@@ -11,9 +11,28 @@ import java.util.function.Consumer;
  */
 public abstract class Tree<T> {
 
+	/**
+	 * Pass this flag to {@link #traverse(Consumer, byte)} as
+	 * the second argument to traverse tree in pre-order way.
+	 */
 	public static final byte TRAVERSE_PRE_ORDER = 0;
+
+	/**
+	 * Pass this flag to {@link #traverse(Consumer, byte)} as
+	 * the second argument to traverse tree in in-order way.
+	 */
 	public static final byte TRAVERSE_IN_ORDER = 1;
+
+	/**
+	 * Pass this flag to {@link #traverse(Consumer, byte)} as
+	 * the second argument to traverse tree in post-order way.
+	 */
 	public static final byte TRAVERSE_POST_ORDER = 2;
+
+	/**
+	 * Pass this flag to {@link #traverse(Consumer, byte)} as
+	 * the second argument to traverse tree in breadth.
+	 */
 	public static final byte TRAVERSE_BREADTH_FIRST = 3;
 
 	/** Reference to a root of tree or null if tree is empty. */
@@ -27,14 +46,17 @@ public abstract class Tree<T> {
 		this.root = root;
 	}
 
+	/**
+	 * Creates an empty tree without root.
+	 */
 	public Tree(){
 		this.root = null;
 	}
 
 	/**
 	 * Returns height of a tree, starting from root node and
-	 * ending with deepest leaf node. To calculate it iterates all
-	 * the nodes in tree and calculate depth only of leaf nodes.
+	 * ending with deepest leaf node. To calculate, it iterates all
+	 * the nodes in tree and calculate depth of only leaf nodes.
 	 * @return Height of tree.
 	 */
 	public int getHeight(){
@@ -78,7 +100,7 @@ public abstract class Tree<T> {
 	 */
 	public abstract Tree<T> getSubtree(Node<T> node) throws Exception;
 
-	public abstract boolean isBalanced();
+	// public abstract boolean isBalanced();
 
 	/**
 	 * Makes a traversal through entire tree. There might be 4 ways
@@ -109,8 +131,35 @@ public abstract class Tree<T> {
 		}
 	}
 
+	/**
+	 * It is called from {@link #traverse(Consumer, byte)}
+	 * to traverse tree in pre-order way if {@link #TRAVERSE_PRE_ORDER}
+	 * is passed as second argument.
+	 * @param fn Function to be executed per each node in tree.
+	 */
 	protected abstract void traversePreOrder(Consumer<Node<T>> fn);
+
+	/**
+	 * It is called from {@link #traverse(Consumer, byte)}
+	 * to traverse tree in in-order way if {@link #TRAVERSE_IN_ORDER}
+	 * is passed as second argument.
+	 * @param fn Function to be executed per each node in tree.
+	 */
 	protected abstract void traverseInOrder(Consumer<Node<T>> fn);
+
+	/**
+	 * It is called from {@link #traverse(Consumer, byte)}
+	 * to traverse tree in post-order way if {@link #TRAVERSE_POST_ORDER}
+	 * is passed as second argument.
+	 * @param fn Function to be executed per each node in tree.
+	 */
 	protected abstract void traversePostOrder(Consumer<Node<T>> fn);
+
+	/**
+	 * It is called from {@link #traverse(Consumer, byte)}
+	 * to traverse tree in breadth way if {@link #TRAVERSE_BREADTH_FIRST}
+	 * is passed as second argument.
+	 * @param fn Function to be executed per each node in tree.
+	 */
 	protected abstract void traverseBreadthFirst(Consumer<Node<T>> fn);
 }

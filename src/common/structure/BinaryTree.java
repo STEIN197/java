@@ -1,66 +1,96 @@
 package common.structure;
 
-public class BinaryTree<T extends Comparable<T>> {
+import java.util.function.Consumer;
 
-	private Node<T> root;
+public class BinaryTree<T> extends Tree<T> {
 
-	public void add(T data){
-		var node = new Node<T>(data);
-		if(this.root == null){
-			this.root = node;
-			return;
+	@Override
+	public Tree<T> getSubtree(common.structure.Node<T> node) throws Exception {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	protected void traverseBreadthFirst(Consumer<common.structure.Node<T>> fn) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	protected void traverseInOrder(Consumer<common.structure.Node<T>> fn) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	protected void traversePostOrder(Consumer<common.structure.Node<T>> fn) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	protected void traversePreOrder(Consumer<common.structure.Node<T>> fn) {
+		// TODO Auto-generated method stub
+
+	}
+	public static class Node<T> extends common.structure.Node<T> {
+
+		protected Node<T> left;
+		protected Node<T> right;
+
+		@Override
+		public int getChildNodesCount() {
+			int count = 0;
+			if (this.left != null)
+				count++;
+			if (this.right != null)
+				count++;
+			return count;
 		}
-		var currentNode = this.root;
-		while(currentNode != null){
-			if(node.data.compareTo(currentNode.data) < 0){
-				if(currentNode.left == null){
-					currentNode.left = node;
-					currentNode = null;
-				} else {
-					currentNode = currentNode.left;
-				}
-			} else {
-				if(currentNode.right == null){
-					currentNode.right = node;
-					currentNode = null;
-				} else {
-					currentNode = currentNode.right;
-				}
+
+		@Override
+		public common.structure.Node<T>[] getChildren() {
+			if (this.left != null && this.right != null) {
+				return (common.structure.Node<T>[]) new common.structure.Node[]{
+					this.left, this.right
+				};
+			} else if (this.left == null) {
+				return (common.structure.Node<T>[]) new common.structure.Node[]{
+					this.right
+				};
+			} else if (this.right == null) {
+				return (common.structure.Node<T>[]) new common.structure.Node[]{
+					this.left
+				};
 			}
+			return (common.structure.Node<T>[]) new common.structure.Node[0];
 		}
-	}
 
-	public T getMin() throws NullPointerException {
-		var node = this.root;
-		while(node.left != null)
-			node = node.left;
-		return node.data;
-	}
+		@Override
+		public boolean hasNode(common.structure.Node<T> node) {
+			var children = this.getChildren();
+			for (var n : children)
+				if (n.equals(node))
+					return true;
+			return false;
+		}
 
-	public T getMax() throws NullPointerException {
-		var node = this.root;
-		while(node.right != null)
-			node = node.right;
-		return node.data;
-	}
-
-	public T getRoot(){
-		try {
-			return this.root.data;
-		} catch(NullPointerException ex) {
+		@Override
+		public common.structure.Node<T> removeNode(common.structure.Node<T> node) {
+			// TODO Auto-generated method stub
 			return null;
 		}
-	}
 
-	private static class Node<T extends Comparable<T>> {
+		@Override
+		public common.structure.Node<T> removeNode(T content) {
+			// TODO Auto-generated method stub
+			return null;
+		}
 
-		public Node<T> left;
-		public Node<T> right;
-		public Node<T> parent;
-		public T data;
+		@Override
+		public void unleash() {
+			// TODO Auto-generated method stub
 
-		public Node(T data){
-			this.data = data;
 		}
 	}
 }

@@ -3,6 +3,9 @@ package common.structure;
 /**
  * Basic class for all node types that {@link Tree<T>} subclasses
  * contain. It may be node for binary trees, of node for regular trees.
+ * Every derived class has {@link #parent} reference to a parent member,
+ * All relations are bidirectioinal. That means, that it is possible to
+ * make chain from leaves to root and vice versa.
  * @param <T> Type of objects that node can contain.
  */
 public abstract class Node<T> {
@@ -93,12 +96,18 @@ public abstract class Node<T> {
 	/**
 	 * Destroys bidirectional bonds between current node
 	 * and its parent. I.e. removes so-called "edge" between them.
-	 * Do nothing if node does not have parent.
+	 * Does nothing if node does not have parent.
 	 */
-	public abstract void unleash();
+	public void unleash() {
+		if (this.parent == null)
+			return;
+		this.parent.removeNode(this);
+	}
 
 	/**
-	 * Removes child node from current node.
+	 * Removes child node from current node. If node has
+	 * more than one children equal to {@code node}, then
+	 * the first occurence will be removed.
 	 * @param node A node to be removed.
 	 * @return Removed node or null if supplied
 	 *         node does not equal to any of children.
@@ -109,7 +118,9 @@ public abstract class Node<T> {
 	 * Removes child node from current, if any of children
 	 * has content in way that expression {@code content.equals(node.content)}
 	 * evaluates to {@code true}. It is the same as {@link #removeNode(Node)},
-	 * except that argument is not wrapper.
+	 * except that argument is not wrapper. If node has
+	 * more than one children equal to {@code node}, then
+	 * the first occurence will be removed.
 	 * @param content Node with this object inside will be removed.
 	 * @return Removed child or null if there is no child with {@code content} content.
 	 */

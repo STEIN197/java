@@ -1,6 +1,5 @@
 package common.structure;
 
-import java.util.List;
 import java.util.function.Consumer;
 import java.util.LinkedList;
 
@@ -18,6 +17,9 @@ public class RegularTree<T> extends Tree<T> {
 		super();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public Tree<T> getSubtree(common.structure.Node<T> node) throws Exception {
 		if (this.root == null)
@@ -88,7 +90,7 @@ public class RegularTree<T> extends Tree<T> {
 
 	public static class Node<T> extends common.structure.Node<T> {
 
-		private List<Node<T>> children = new LinkedList<>();
+		private LinkedList<Node<T>> children = new LinkedList<>(); // TODO Replace this with common.structure.LinkedList
 
 		/**
 		 * {@inheritDoc}
@@ -109,16 +111,6 @@ public class RegularTree<T> extends Tree<T> {
 
 		/**
 		 * {@inheritDoc}
-		 */
-		@Override
-		public void unleash() {
-			if (this.parent == null)
-				return;
-			this.parent.removeNode(this);
-		}
-
-		/**
-		 * {@inheritDoc}
 		 * 
 		 * @param node {@inheritDoc}
 		 */
@@ -126,7 +118,7 @@ public class RegularTree<T> extends Tree<T> {
 		public common.structure.Node<T> removeNode(common.structure.Node<T> node) {
 			if (this.hasNode(node)) {
 				this.children.remove(node);
-				node.parent = null;
+				node.parent = null; // TODO This removes parent link from argument, but not from actual child. May break relations.
 				return node;
 			}
 			return null;

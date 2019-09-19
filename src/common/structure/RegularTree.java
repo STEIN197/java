@@ -5,7 +5,7 @@ import java.util.LinkedList;
 
 public class RegularTree<T> extends Tree<T> {
 
-	public RegularTree(common.structure.Node<T> node) {
+	public RegularTree(TreeNode<T> node) {
 		super(node);
 	}
 
@@ -21,7 +21,7 @@ public class RegularTree<T> extends Tree<T> {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Tree<T> getSubtree(common.structure.Node<T> node) throws Exception {
+	public Tree<T> getSubtree(TreeNode<T> node) throws Exception {
 		if (this.root == null)
 			throw new Exception("Tree has no root element");
 		else if (!this.root.hasNode(node))
@@ -31,11 +31,11 @@ public class RegularTree<T> extends Tree<T> {
 	}
 
 	@Override
-	protected void traverseBreadthFirst(Consumer<common.structure.Node<T>> fn) {
-		var queue = new Queue<common.structure.Node<T>>(this.root);
+	protected void traverseBreadthFirst(Consumer<TreeNode<T>> fn) {
+		var queue = new Queue<TreeNode<T>>(this.root);
 		while (queue.size() > 0) {
 			var currentNode = queue.dequeue();
-			common.structure.Node<T>[] children = currentNode.getChildren();
+			TreeNode<T>[] children = currentNode.getChildren();
 			for (var node : children)
 				queue.inqueue(node);
 			fn.accept(currentNode);
@@ -43,28 +43,28 @@ public class RegularTree<T> extends Tree<T> {
 	}
 
 	@Override
-	protected void traversePreOrder(Consumer<common.structure.Node<T>> fn) {
+	protected void traversePreOrder(Consumer<TreeNode<T>> fn) {
 		this.traversePreOrder(fn, this.root);
 	}
 
 	@Override
-	protected void traversePostOrder(Consumer<common.structure.Node<T>> fn) {
+	protected void traversePostOrder(Consumer<TreeNode<T>> fn) {
 		this.traversePostOrder(fn, this.root);
 	}
 	
 	@Override
-	protected void traverseInOrder(Consumer<common.structure.Node<T>> fn) {
+	protected void traverseInOrder(Consumer<TreeNode<T>> fn) {
 		this.traverseInOrder(fn, this.root);
 	}
 
-	private void traversePreOrder(Consumer<common.structure.Node<T>> fn, common.structure.Node<T> node) {
+	private void traversePreOrder(Consumer<TreeNode<T>> fn, TreeNode<T> node) {
 		fn.accept(node);
 		var children = node.getChildren();
 		for (var child : children)
 			this.traversePreOrder(fn, child);
 	}
 	
-	private void traversePostOrder(Consumer<common.structure.Node<T>> fn, common.structure.Node<T> node) {
+	private void traversePostOrder(Consumer<TreeNode<T>> fn, TreeNode<T> node) {
 		var children = node.getChildren();
 		for (var child : children)
 			if (child.isLeaf())
@@ -74,7 +74,7 @@ public class RegularTree<T> extends Tree<T> {
 		fn.accept(node);
 	}
 	
-	private void traverseInOrder(Consumer<common.structure.Node<T>> fn, common.structure.Node<T> node) {
+	private void traverseInOrder(Consumer<TreeNode<T>> fn, TreeNode<T> node) {
 		var children = node.getChildren();
 		for (int i = 0; i < children.length; i++) {
 			var child = children[i];
@@ -88,7 +88,7 @@ public class RegularTree<T> extends Tree<T> {
 		}
 	}
 
-	public static class Node<T> extends common.structure.Node<T> {
+	public static class Node<T> extends TreeNode<T> {
 
 		private LinkedList<Node<T>> children = new LinkedList<>(); // TODO Replace this with common.structure.LinkedList
 
@@ -115,17 +115,17 @@ public class RegularTree<T> extends Tree<T> {
 		 * @param node {@inheritDoc}
 		 */
 		@Override
-		public common.structure.Node<T> removeNode(common.structure.Node<T> node) {
+		public TreeNode<T> removeNode(TreeNode<T> node) {
 			if (this.hasNode(node)) {
 				this.children.remove(node);
-				node.parent = null; // TODO This removes parent link from argument, but not from actual child. May break relations.
+				node.parent = null; // TODO This removes parent link from argument, but not from actual child. It breaks relations.
 				return node;
 			}
 			return null;
 		}
 
 		@Override
-		public common.structure.Node<T> removeNode(T content) {
+		public TreeNode<T> removeNode(T content) {
 			return this.removeNode(new Node<T>(content));
 		}
 
@@ -139,12 +139,12 @@ public class RegularTree<T> extends Tree<T> {
 		}
 
 		@Override
-		public boolean hasNode(common.structure.Node<T> node) {
+		public boolean hasNode(TreeNode<T> node) {
 			return this.children.contains(node);
 		}
 
 		@Override
-		public common.structure.Node<T>[] getChildren() {
+		public TreeNode<T>[] getChildren() {
 			Node<T>[] result = (Node<T>[]) new Node[this.children.size()];
 			return this.children.toArray(result);
 		}

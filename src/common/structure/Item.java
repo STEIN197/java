@@ -22,4 +22,10 @@ class Item<T> {
 	public Item(T item){
 		this.item = item;
 	}
+
+	public Item(T item, Item<T> prev, Item<T> next) {
+		this.item = item;
+		this.prevItem = prev;
+		this.nextItem = next;
+	}
 }

@@ -8,12 +8,12 @@ package common.structure;
  * make chain from leaves to root and vice versa.
  * @param <T> Type of objects that node can contain.
  */
-public abstract class Node<T> {
+public abstract class TreeNode<T> {
 
 	/** Stores actual content of node. */
 	public final T content;
 	/** Reference to a parent node or null if node has no parent. */
-	protected Node<T> parent;
+	protected TreeNode<T> parent;
 
 	/**
 	 * Creates a node with specified content and parent node.
@@ -21,7 +21,7 @@ public abstract class Node<T> {
 	 * @param parent A node that is to be parent for current.
 	 *               {@code null} if node does not have parent.
 	 */
-	public Node(T content, Node<T> parent){
+	public TreeNode(T content, TreeNode<T> parent){
 		this.content = content;
 		this.parent = parent;
 	}
@@ -30,11 +30,11 @@ public abstract class Node<T> {
 	 * Default constructor for nodes.
 	 * @param content Object is stored inside node.
 	 */
-	public Node(T content){
+	public TreeNode(T content){
 		this.content = content;
 	}
 
-	public Node(){
+	public TreeNode(){
 		this.content = null;
 	}
 
@@ -43,7 +43,7 @@ public abstract class Node<T> {
 	 * Node cannot have more than one parent.
 	 * @return Parent node for current node or null if node has no parent (i.e. it is root itself).
 	 */
-	public final Node<T> getParent(){
+	public final TreeNode<T> getParent(){
 		return this.parent;
 	}
 
@@ -53,7 +53,7 @@ public abstract class Node<T> {
 	 * @return Topest node that has no parent or null if current node
 	 *         does not have parent.
 	 */
-	public final Node<T> getRoot(){
+	public final TreeNode<T> getRoot(){
 		if(this.parent == null)
 			return null;
 		var root = this.parent;
@@ -112,32 +112,32 @@ public abstract class Node<T> {
 	 * @return Removed node or null if supplied
 	 *         node does not equal to any of children.
 	 */
-	public abstract Node<T> removeNode(Node<T> node);
+	public abstract TreeNode<T> removeNode(TreeNode<T> node);
 
 	/**
 	 * Removes child node from current, if any of children
 	 * has content in way that expression {@code content.equals(node.content)}
-	 * evaluates to {@code true}. It is the same as {@link #removeNode(Node)},
+	 * evaluates to {@code true}. It is the same as {@link #removeNode(TreeNode)},
 	 * except that argument is not wrapper. If node has
 	 * more than one children equal to {@code node}, then
 	 * the first occurence will be removed.
 	 * @param content Node with this object inside will be removed.
 	 * @return Removed child or null if there is no child with {@code content} content.
 	 */
-	public abstract Node<T> removeNode(T content);
+	public abstract TreeNode<T> removeNode(T content);
 
 	/**
 	 * Check if node has specified child.
 	 * @param node A node is considered as child of current node.
 	 * @return {@code true} if current node has {@code node} child.
 	 */
-	public abstract boolean hasNode(Node<T> node);
+	public abstract boolean hasNode(TreeNode<T> node);
 
 	/**
 	 * Returns an array of children of current node.
 	 * @return An array.
 	 */
-	public abstract Node<T>[] getChildren();
+	public abstract TreeNode<T>[] getChildren();
 
 	@Override
 	public final int hashCode(){

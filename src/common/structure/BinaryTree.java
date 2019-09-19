@@ -6,35 +6,35 @@ import java.util.function.Consumer;
 public class BinaryTree<T> extends Tree<T> {
 
 	@Override
-	public Tree<T> getSubtree(common.structure.Node<T> node) throws Exception {
+	public Tree<T> getSubtree(TreeNode<T> node) throws Exception {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	protected void traverseBreadthFirst(Consumer<common.structure.Node<T>> fn) {
+	protected void traverseBreadthFirst(Consumer<TreeNode<T>> fn) {
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	protected void traverseInOrder(Consumer<common.structure.Node<T>> fn) {
+	protected void traverseInOrder(Consumer<TreeNode<T>> fn) {
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	protected void traversePostOrder(Consumer<common.structure.Node<T>> fn) {
+	protected void traversePostOrder(Consumer<TreeNode<T>> fn) {
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	protected void traversePreOrder(Consumer<common.structure.Node<T>> fn) {
+	protected void traversePreOrder(Consumer<TreeNode<T>> fn) {
 		// TODO Auto-generated method stub
 
 	}
-	public static class Node<T> extends common.structure.Node<T> {
+	public static class Node<T> extends TreeNode<T> {
 
 		/** Reference to the left child */
 		protected Node<T> left;
@@ -53,6 +53,9 @@ public class BinaryTree<T> extends Tree<T> {
 			super();
 		}
 
+		/**
+		 * {@inheritDoc}
+		 */
 		@Override
 		public int getChildNodesCount() {
 			int count = 0;
@@ -67,17 +70,17 @@ public class BinaryTree<T> extends Tree<T> {
 		 * {@inheritDoc}
 		 */
 		@Override
-		public common.structure.Node<T>[] getChildren() {
-			var children = new LinkedList<common.structure.Node<T>>();
+		public TreeNode<T>[] getChildren() {
+			var children = new LinkedList<TreeNode<T>>();
 			if (this.left != null)
 				children.add(this.left);
 			if (this.right != null)
 				children.add(this.right);
-			return (common.structure.Node<T>[]) children.toArray();
+			return (TreeNode<T>[]) children.toArray();
 		}
 
 		@Override
-		public boolean hasNode(common.structure.Node<T> node) {
+		public boolean hasNode(TreeNode<T> node) {
 			return
 				this.left != null && this.left.equals(node)
 					||
@@ -88,7 +91,7 @@ public class BinaryTree<T> extends Tree<T> {
 		 * {@inheritDoc}
 		 */
 		@Override
-		public common.structure.Node<T> removeNode(common.structure.Node<T> node) {
+		public TreeNode<T> removeNode(TreeNode<T> node) {
 			if (this.left != null && this.left.equals(node))
 				return this.removeLeft();
 			if (this.right != null && this.right.equals(node))
@@ -100,7 +103,7 @@ public class BinaryTree<T> extends Tree<T> {
 		 * {@inheritDoc}
 		 */
 		@Override
-		public common.structure.Node<T> removeNode(T content) {
+		public TreeNode<T> removeNode(T content) {
 			return this.removeNode(new Node<T>(content));
 		}
 

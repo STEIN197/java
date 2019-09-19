@@ -36,13 +36,13 @@ public abstract class Tree<T> {
 	public static final byte TRAVERSE_BREADTH_FIRST = 3;
 
 	/** Reference to a root of tree or null if tree is empty. */
-	protected Node<T> root;
+	protected TreeNode<T> root;
 
 	/**
 	 * Creates a tree with {@code root} root node.
 	 * @param root Node to be a root.
 	 */
-	public Tree(Node<T> root){
+	public Tree(TreeNode<T> root){
 		this.root = root;
 	}
 
@@ -75,7 +75,7 @@ public abstract class Tree<T> {
 	 * Returns root node of a tree.
 	 * @return Root node or null if tree is empty (i.e. it has no root).
 	 */
-	public final Node<T> getRoot(){
+	public final TreeNode<T> getRoot(){
 		return this.root;
 	}
 
@@ -84,7 +84,7 @@ public abstract class Tree<T> {
 	 * Otherwise does nothing.
 	 * @param node A node to be a root.
 	 */
-	public void setRoot(Node<T> node){
+	public void setRoot(TreeNode<T> node){
 		if(this.root == null)
 			this.root = node;
 	}
@@ -98,7 +98,7 @@ public abstract class Tree<T> {
 	 *                   or if three has no root element.
 	 * @return New tree retrieved from current.
 	 */
-	public abstract Tree<T> getSubtree(Node<T> node) throws Exception;
+	public abstract Tree<T> getSubtree(TreeNode<T> node) throws Exception;
 
 	// public abstract boolean isBalanced();
 
@@ -110,7 +110,7 @@ public abstract class Tree<T> {
 	 *               one of {@code Tree<T>.TRAVERSE_*} constant. Otherwise does
 	 *               nothing.
 	 */
-	public final void traverse(Consumer<Node<T>> fn, byte method){
+	public final void traverse(Consumer<TreeNode<T>> fn, byte method){
 		if(this.root == null)
 			return;
 		switch(method){
@@ -137,7 +137,7 @@ public abstract class Tree<T> {
 	 * is passed as second argument.
 	 * @param fn Function to be executed per each node in tree.
 	 */
-	protected abstract void traversePreOrder(Consumer<Node<T>> fn);
+	protected abstract void traversePreOrder(Consumer<TreeNode<T>> fn);
 
 	/**
 	 * It is called from {@link #traverse(Consumer, byte)}
@@ -145,7 +145,7 @@ public abstract class Tree<T> {
 	 * is passed as second argument.
 	 * @param fn Function to be executed per each node in tree.
 	 */
-	protected abstract void traverseInOrder(Consumer<Node<T>> fn);
+	protected abstract void traverseInOrder(Consumer<TreeNode<T>> fn);
 
 	/**
 	 * It is called from {@link #traverse(Consumer, byte)}
@@ -153,7 +153,7 @@ public abstract class Tree<T> {
 	 * is passed as second argument.
 	 * @param fn Function to be executed per each node in tree.
 	 */
-	protected abstract void traversePostOrder(Consumer<Node<T>> fn);
+	protected abstract void traversePostOrder(Consumer<TreeNode<T>> fn);
 
 	/**
 	 * It is called from {@link #traverse(Consumer, byte)}
@@ -161,5 +161,5 @@ public abstract class Tree<T> {
 	 * is passed as second argument.
 	 * @param fn Function to be executed per each node in tree.
 	 */
-	protected abstract void traverseBreadthFirst(Consumer<Node<T>> fn);
+	protected abstract void traverseBreadthFirst(Consumer<TreeNode<T>> fn);
 }

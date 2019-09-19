@@ -36,8 +36,32 @@ public class LinkedList<T> implements Iterable<T> {
 		this.size++;
 	}
 
-	public void setLast(T item){} // TODO
-	public void setFirst(T item){} // TODO
+	public T replaceLast(T item){
+		if (this.size == 0) {
+			this.addToEmptyList(item);
+			return null;
+		}
+		var old = this.last.item;
+		var newItem = new Item<T>(item);
+		this.last = newItem;
+		if (this.size == 1)
+			this.first = this.last;
+		return old;
+		
+	}
+
+	public T replaceFirst(T item){
+		if (this.size == 0) {
+			this.addToEmptyList(item);
+			return null;
+		}
+		var old = this.first.item;
+		var newItem = new Item<T>(item);
+		this.first = newItem;
+		if (this.size == 1)
+			this.last = this.first;
+		return old;
+	}
 
 	public T removeLast() throws NoSuchElementException {
 		if (this.size == 0)
@@ -127,5 +151,6 @@ public class LinkedList<T> implements Iterable<T> {
 
 	private void addToEmptyList(T item) {
 		this.first = this.last = new Item<T>(item);
+		this.size++;
 	}
 }

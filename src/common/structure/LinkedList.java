@@ -118,10 +118,8 @@ public class LinkedList<T> implements Iterable<T> {
 	public T[] toArray() {
 		var result = (T[]) new Object[this.size];
 		int i = 0;
-		for (var e : this) {
-			result[i] = e;
-			i++;
-		}
+		for (var e : this)
+			result[i++] = e;
 		return result;
 	}
 

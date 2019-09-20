@@ -2,29 +2,72 @@ package common.structure;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+import java.util.function.Consumer;
+import java.util.function.UnaryOperator;
 
+/**
+ * Implementation of double-linked list. Size of this type of list is
+ * unlimited. It behaves self like an array and has the same operations
+ * that can be applied to regular arrays, i.e. traversal, pulling items
+ * by index and forth. Each element in this structure has two references:
+ * to the previous and to the next element in list. In other words, the list
+ * has a form of a chain. It does not use arrays inside to store all items.
+ * @param <T> Type of objects stored in a list.
+ */
 public class LinkedList<T> implements Iterable<T> {
 
+	/** Holds count of elements in list. */
 	private int size;
-	private Item<T> last;
+
+	/**
+	 * Reference to the first element in a list. {@code null} if list is empty.
+	 * If list has one element, then expression {@code first == last} evaluates
+	 * to {@code true}, i.e. both references refer to the same object.
+	 */
 	private Item<T> first;
 
+	/**
+	 * Reference to the last element in a list. {@code null} if list is empty.
+	 * If list has one element, then expression {@code first == last} evaluates
+	 * to {@code true}, i.e. both references refer to the same object.
+	 */
+	private Item<T> last;
+
+	/**
+	 * Creates a list filled with {@code items}.
+	 * @param items Items to be stored inside.
+	 */
 	public LinkedList(T... items) {
 		for (var e : items)
 			this.addLast(e);
 	}
 
-	public void addLast(T item) {
-		if (this.size == 0) {
-			this.addToEmptyList(item);
-			return;
-		}
-		var last = new Item<T>(item, this.last, null);
-		this.last.nextItem = last;
-		this.last = last;
-		this.size++;
+	/**
+	 * Returns {@link #first} element,
+	 * or null if list is empty.
+	 * @return The first element of list.
+	 */
+	public T getFirst() {
+		if (this.size == 0)
+			return null;
+		return this.first.item;
 	}
 
+	/**
+	 * Returns {@link #last} element,
+	 * or null if list is empty.
+	 * @return The last element of list.
+	 */
+	public T getLast() {
+		if (this.size == 0)
+			return null;
+		return this.last.item;
+	}
+
+	/**
+	 * Adds an element to the begining of list.
+	 * @param item Item to push to the start.
+	 */
 	public void addFirst(T item) {
 		if (this.size == 0) {
 			this.addToEmptyList(item);
@@ -36,20 +79,28 @@ public class LinkedList<T> implements Iterable<T> {
 		this.size++;
 	}
 
-	public T replaceLast(T item){
+	/**
+	 * Adds an element to the end of list.
+	 * @param item Item to push to the end.
+	 */
+	public void addLast(T item) {
 		if (this.size == 0) {
 			this.addToEmptyList(item);
-			return null;
+			return;
 		}
-		var old = this.last.item;
-		var newItem = new Item<T>(item);
-		this.last = newItem;
-		if (this.size == 1)
-			this.first = this.last;
-		return old;
-		
+		var last = new Item<T>(item, this.last, null);
+		this.last.nextItem = last;
+		this.last = last;
+		this.size++;
 	}
 
+	/**
+	 * Replaces the first element in a list with {@code item}.
+	 * It does not add an element, but if list is empty,
+	 * then it just adds an element to the list returning {@code null}.
+	 * @param item Object to be the first in a list.
+	 * @return Previous element that was first. Removes it from list.
+	 */
 	public T replaceFirst(T item){
 		if (this.size == 0) {
 			this.addToEmptyList(item);
@@ -63,28 +114,72 @@ public class LinkedList<T> implements Iterable<T> {
 		return old;
 	}
 
-	public T removeLast() throws NoSuchElementException {
-		if (this.size == 0)
-			throw new NoSuchElementException("The list is empty");
-		var last = this.last;
-		this.last = last.prevItem;
-		last.prevItem = null;
-		this.last.nextItem = null; // TODO NPE might be thrown. Tests weren't ran.
-		this.size--;
-		return last.item;
+	/**
+	 * Replaces the last element in a list with {@code item}.
+	 * It does not add an element, but if list is empty,
+	 * then it just adds an element to the list returning {@code null}.
+	 * @param item Object to be the last in a list.
+	 * @return Previous element that was last. Removes it from list.
+	 */
+	public T replaceLast(T item){
+		if (this.size == 0) {
+			this.addToEmptyList(item);
+			return null;
+		}
+		var old = this.last.item;
+		var newItem = new Item<T>(item);
+		this.last = newItem;
+		if (this.size == 1)
+			this.first = this.last;
+		return old;
 	}
 
+	/**
+	 * Removes the first element from list.
+	 * @return Removed element.
+	 * @throws NoSuchElementException If list is empty.
+	 */
 	public T removeFirst() throws NoSuchElementException {
 		if (this.size == 0)
 			throw new NoSuchElementException("The list is empty");
 		var first = this.first;
+		if (this.size == 1) {
+			this.first = this.last = null;
+			this.size--;
+			return first.item;
+		}
 		this.first = first.nextItem;
-		first.nextItem = null;
-		this.first.prevItem = null; // TODO NPE might be thrown. Tests weren't ran.
+		this.first.prevItem = null;
 		this.size--;
 		return first.item;
 	}
 
+	/**
+	 * Removes the last element from list.
+	 * @return Removed element.
+	 * @throws NoSuchElementException If list is empty.
+	 */
+	public T removeLast() throws NoSuchElementException {
+		if (this.size == 0)
+			throw new NoSuchElementException("The list is empty");
+		var last = this.last;
+		if (this.size == 1) {
+			this.first = this.last = null;
+			this.size--;
+			return last.item;
+		}
+		this.last = last.prevItem;
+		this.last.nextItem = null;
+		this.size--;
+		return last.item;
+	}
+
+	/**
+	 * Returns an element at specified position.
+	 * @param index Position of an element that will return.
+	 * @return Element at {@code index} position.
+	 * @throws ArrayIndexOutOfBoundsException If {@code index} is less than 0 or greater than size of list.
+	 */
 	public T elementAt(int index) throws ArrayIndexOutOfBoundsException {
 		if (index < 0 || this.size <= index)
 			throw new ArrayIndexOutOfBoundsException(index);
@@ -94,6 +189,30 @@ public class LinkedList<T> implements Iterable<T> {
 		return cursor.item;
 	}
 
+	/**
+	 * Replaces element at position {@code index} with {@code item}.
+	 * @param index Position of overrideable element.
+	 * @param item Item that replaces {@code index} element.
+	 * @return Overrided element.
+	 * @throws ArrayIndexOutOfBoundsException If {@code index} is less than 0 or greater than list size.
+	 */
+	public T replaceAt(int index, T item) throws ArrayIndexOutOfBoundsException {
+		if (index < 0 || this.size <= index)
+			throw new ArrayIndexOutOfBoundsException(index);
+		var cursor = this.first;
+		for (int i = 0; i < index; i++)
+			cursor = cursor.nextItem;
+		T old = cursor.item;
+		cursor.item = item;
+		return old;
+	}
+
+	/**
+	 * Removes element at specified positions.
+	 * @param index Poisition of an element that will be removed.
+	 * @return Removed element.
+	 * @throws ArrayIndexOutOfBoundsException If {@code index} is less than 0 or greater than size of list.
+	 */
 	public T removeAt(int index) throws ArrayIndexOutOfBoundsException {
 		if (index < 0 || this.size <= index)
 			throw new ArrayIndexOutOfBoundsException(index);
@@ -111,10 +230,14 @@ public class LinkedList<T> implements Iterable<T> {
 		this.size--;
 		return cursor.item;
 	}
-	public void setAt(int index, T item) {} // TODO
+
 	public void insertAfter(int index, T item) {} // TODO
 	public void insertBefore(int index, T item) {} // TODO
 
+	/**
+	 * "Cast" list to a regular array.
+	 * @return Array containing elements of list.
+	 */
 	public T[] toArray() {
 		var result = (T[]) new Object[this.size];
 		int i = 0;
@@ -123,10 +246,21 @@ public class LinkedList<T> implements Iterable<T> {
 		return result;
 	}
 
+	public void reverse() {} // TODO
+	public void traverse(Consumer<T> fn, boolean reverseOrder) {} // TODO
+	public void traverse(UnaryOperator<T> fn, boolean reverseOrder) {} // TODO
+
+	/**
+	 * Return size of list.
+	 * @return Size of list.
+	 */
 	public int getSize() {
 		return this.size;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public Iterator<T> iterator() {
 		return new Iterator<T>(){
@@ -147,6 +281,10 @@ public class LinkedList<T> implements Iterable<T> {
 		};
 	}
 
+	/**
+	 * Adds item to the empty list.
+	 * @param item Item to be added to the list.
+	 */
 	private void addToEmptyList(T item) {
 		this.first = this.last = new Item<T>(item);
 		this.size++;

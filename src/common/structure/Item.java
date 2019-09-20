@@ -8,8 +8,8 @@ package common.structure;
  */
 class Item<T> {
 	
-	/** Real data */
-	public final T item;
+	/** Real data. As the class is used inside package, the field is overrideable. */
+	public T item;
 	/** Reference to the next item in the structure. */
 	public Item<T> nextItem;
 	/** Reference to the previous item in the structure. */

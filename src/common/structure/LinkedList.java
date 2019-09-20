@@ -231,8 +231,55 @@ public class LinkedList<T> implements Iterable<T> {
 		return cursor.item;
 	}
 
-	public void insertAfter(int index, T item) {} // TODO
-	public void insertBefore(int index, T item) {} // TODO
+	/**
+	 * Inserts item after {@code index} position.
+	 * Suppose {@code index} is 2. Then the new item is inserted
+	 * between third and fourth element.
+	 * @param index Position after which element is inserted.
+	 * @param item Item to insert.
+	 * @throws ArrayIndexOutOfBoundsException If {@code index} is less than 0, or greater than list size.
+	 */
+	public void insertAfter(int index, T item) throws ArrayIndexOutOfBoundsException {
+		if (index < 0 || this.size <= index)
+			throw new ArrayIndexOutOfBoundsException(index);
+		var cursor = this.first;
+		if (index + 1 == this.size) {
+			this.addLast(item);
+			return;
+		}
+		for (int i = 0; i < index; i++)
+			cursor = cursor.nextItem;
+		var next = cursor.nextItem;
+		var inserted = new Item<T>(item, cursor, next);
+		cursor.nextItem = inserted;
+		next.prevItem = inserted;
+		this.size++;
+	}
+	
+	/**
+	 * Inserts item before {@code index} position.
+	 * Suppose {@code index} is 2. Then the new item is inserted
+	 * between second and third element.
+	 * @param index Position before which element is inserted.
+	 * @param item Item to insert.
+	 * @throws ArrayIndexOutOfBoundsException If {@code index} is less than 0, or greater than list size.
+	 */
+	public void insertBefore(int index, T item) throws ArrayIndexOutOfBoundsException {
+		if (index < 0 || this.size <= index)
+			throw new ArrayIndexOutOfBoundsException(index);
+		var cursor = this.first;
+		if (index == 0) {
+			this.addFirst(item);
+			return;
+		}
+		for (int i = 0; i < index; i++)
+			cursor = cursor.nextItem;
+		var prev = cursor.prevItem;
+		var inserted = new Item<T>(item, prev, cursor);
+		cursor.prevItem = inserted;
+		prev.nextItem = inserted;
+		this.size++;
+	}
 
 	/**
 	 * "Cast" list to a regular array.
@@ -246,7 +293,6 @@ public class LinkedList<T> implements Iterable<T> {
 		return result;
 	}
 
-	public void reverse() {} // TODO
 	public void traverse(Consumer<T> fn, boolean reverseOrder) {} // TODO
 	public void traverse(UnaryOperator<T> fn, boolean reverseOrder) {} // TODO
 

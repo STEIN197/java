@@ -2,7 +2,6 @@ package common.structure;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
-import java.util.function.Consumer;
 import java.util.function.UnaryOperator;
 
 /**
@@ -293,8 +292,33 @@ public class LinkedList<T> implements Iterable<T> {
 		return result;
 	}
 
-	public void traverse(Consumer<T> fn, boolean reverseOrder) {} // TODO
-	public void traverse(UnaryOperator<T> fn, boolean reverseOrder) {} // TODO
+	/**
+	 * Makes traversal of this list. It is different from foreach-loop
+	 * because in this case we can perform traversal in reverse
+	 * order. Additionally, it is possible to change value of each item.
+	 * @param fn Function to be called per each item in list.
+	 *           As it returns a value, the returned value is used to be
+	 *           the new value of item.
+	 * @param reverseOrder {@code true} if there is need to traverse list from last to the first element.
+	 */
+	public void traverse(UnaryOperator<T> fn, boolean reverseOrder) {
+		if (this.size == 0)
+			return;
+		Item<T> cursor;
+		if (reverseOrder) {
+			cursor = this.last;
+			while (cursor != null) {
+				cursor.item = fn.apply(cursor.item);
+				cursor = cursor.prevItem;
+			}
+		} else {
+			cursor = this.first;
+			while (cursor != null) {
+				cursor.item = fn.apply(cursor.item);
+				cursor = cursor.nextItem;
+			}
+		}
+	}
 
 	/**
 	 * Return size of list.

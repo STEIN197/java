@@ -64,6 +64,14 @@ public class LinkedList<T> implements Iterable<T> {
 	}
 
 	/**
+	 * Return size of list.
+	 * @return Size of list.
+	 */
+	public int getSize() {
+		return this.size;
+	}
+
+	/**
 	 * Adds an element to the begining of list.
 	 * @param item Item to push to the start.
 	 */
@@ -321,11 +329,11 @@ public class LinkedList<T> implements Iterable<T> {
 	}
 
 	/**
-	 * Return size of list.
-	 * @return Size of list.
+	 * Clears entire list and deletes all items.
 	 */
-	public int getSize() {
-		return this.size;
+	public void clear() {
+		this.size = 0;
+		this.first = this.last = null;
 	}
 
 	/**

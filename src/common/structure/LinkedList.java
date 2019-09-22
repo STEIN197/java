@@ -72,6 +72,18 @@ public class LinkedList<T> implements Iterable<T> {
 	}
 
 	/**
+	 * Checks if {@code item} contains in list.
+	 * @param item Item to be checked.
+	 * @return {@code true} if list contains the item.
+	 */
+	public boolean contains(T item) {
+		for (T e : this)
+			if (item.equals(e))
+				return true;
+		return false;
+	}
+
+	/**
 	 * Adds an element to the begining of list.
 	 * @param item Item to push to the start.
 	 */
@@ -236,6 +248,32 @@ public class LinkedList<T> implements Iterable<T> {
 		next.prevItem = prev;
 		this.size--;
 		return cursor.item;
+	}
+
+	/**
+	 * Removes the first occurence of {@code item} object and
+	 * returns it.
+	 * @param item Item to be removed from list.
+	 * @return Removed item.
+	 * @throws NoSuchElementException If there is no {@code item} element in list.
+	 */
+	public T remove(T item) throws NoSuchElementException {
+		Item<T> cursor = this.first;
+		if (cursor == null)
+			throw new NoSuchElementException();
+		while (!cursor.item.equals(item) && cursor.nextItem != null)
+			cursor = cursor.nextItem;
+		if (cursor == null)
+			throw new NoSuchElementException();
+		var prev = cursor.prevItem;
+		var next = cursor.nextItem;
+		var old = cursor.item;
+		if (prev != null)
+			prev.nextItem = next;
+		if (next != null)
+			next.prevItem = prev;
+		this.size--;
+		return old;
 	}
 
 	/**

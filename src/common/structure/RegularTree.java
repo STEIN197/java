@@ -1,8 +1,9 @@
 package common.structure;
 
+import java.util.NoSuchElementException;
 import java.util.function.Consumer;
-import java.util.LinkedList;
 
+// TODO Document class, make tests
 public class RegularTree<T> extends Tree<T> {
 
 	public RegularTree(TreeNode<T> node) {
@@ -90,7 +91,7 @@ public class RegularTree<T> extends Tree<T> {
 
 	public static class Node<T> extends TreeNode<T> {
 
-		private LinkedList<Node<T>> children = new LinkedList<>(); // TODO Replace this with common.structure.LinkedList
+		private LinkedList<TreeNode<T>> children = new LinkedList<>();
 
 		/**
 		 * {@inheritDoc}
@@ -106,22 +107,17 @@ public class RegularTree<T> extends Tree<T> {
 		 */
 		@Override
 		public int getChildNodesCount() {
-			return this.children.size();
+			return this.children.getSize();
 		}
 
 		/**
 		 * {@inheritDoc}
-		 * 
-		 * @param node {@inheritDoc}
 		 */
 		@Override
-		public TreeNode<T> removeNode(TreeNode<T> node) {
-			if (this.hasNode(node)) {
-				this.children.remove(node);
-				node.parent = null; // TODO This removes parent link from argument, but not from actual child. It breaks relations.
-				return node;
-			}
-			return null;
+		public TreeNode<T> removeNode(TreeNode<T> node) throws NoSuchElementException {
+			TreeNode<T> old = this.children.remove(node);
+			old.parent = null;
+			return old;
 		}
 
 		@Override
@@ -130,7 +126,7 @@ public class RegularTree<T> extends Tree<T> {
 		}
 
 		public void addNode(Node<T> node) {
-			this.children.add(node);
+			this.children.addLast(node);
 			node.parent = this;
 		}
 
@@ -145,8 +141,7 @@ public class RegularTree<T> extends Tree<T> {
 
 		@Override
 		public TreeNode<T>[] getChildren() {
-			Node<T>[] result = (Node<T>[]) new Node[this.children.size()];
-			return this.children.toArray(result);
+			return this.children.toArray();
 		}
 	}
 }

@@ -1,5 +1,7 @@
 package common.structure;
 
+import java.util.NoSuchElementException;
+
 /**
  * Basic class for all node types that {@link Tree<T>} subclasses
  * contain. It may be node for binary trees, of node for regular trees.
@@ -109,10 +111,10 @@ public abstract class TreeNode<T> {
 	 * more than one children equal to {@code node}, then
 	 * the first occurence will be removed.
 	 * @param node A node to be removed.
-	 * @return Removed node or null if supplied
-	 *         node does not equal to any of children.
+	 * @return Removed node.
+	 * @throws NoSuchElementException If there is no {@code node} child in node.
 	 */
-	public abstract TreeNode<T> removeNode(TreeNode<T> node);
+	public abstract TreeNode<T> removeNode(TreeNode<T> node) throws NoSuchElementException;
 
 	/**
 	 * Removes child node from current, if any of children
@@ -122,9 +124,10 @@ public abstract class TreeNode<T> {
 	 * more than one children equal to {@code node}, then
 	 * the first occurence will be removed.
 	 * @param content Node with this object inside will be removed.
-	 * @return Removed child or null if there is no child with {@code content} content.
+	 * @return Removed child.
+	 * @throws NoSuchElementException If there is no {@code content} child in node.
 	 */
-	public abstract TreeNode<T> removeNode(T content);
+	public abstract TreeNode<T> removeNode(T content) throws NoSuchElementException;
 
 	/**
 	 * Check if node has specified child.

@@ -406,3 +406,4 @@ public class LinkedList<T> implements Iterable<T> {
 		this.size++;
 	}
 }
+// TODO Make getFirst() and getLast() throw an exception

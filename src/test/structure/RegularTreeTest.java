@@ -4,7 +4,7 @@ import common.structure.RegularTree;
 
 public class RegularTreeTest {
 
-	private RegularTree<T> getEmptyTree() {
+	private RegularTree<String> getEmptyTree() {
 		return new RegularTree<>();
 	}
 	public static class Node {

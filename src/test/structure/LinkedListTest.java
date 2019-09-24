@@ -12,7 +12,7 @@ import org.junit.Test;
 import common.structure.LinkedList;
 
 
-// TODO There are tests only on getFirst() and getLast() methods. Make more tests
+// TODO There are tests only on getFirst(), getLast() and getSize() methods. Make more tests
 public class LinkedListTest {
 
 	private LinkedList<String> list;
@@ -433,6 +433,11 @@ public class LinkedListTest {
 		this.list.insertBefore(0, "E");
 		assertEquals(5, this.list.getSize());
 	}
+
+	public void replaceFirst_AddsAnItemToEmptyList_ReturnsNull() {}
+	public void replaceFirst_ReturnsCorrectItem() {}
+	public void replaceLast_AddsAnItemToEmptyList_ReturnsNull() {}
+	public void replaceLast_ReturnsCorrectItem() {}
 
 	private static void fillWithABC(LinkedList<String> list) {
 		list.addLast("A");

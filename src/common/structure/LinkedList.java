@@ -42,24 +42,24 @@ public class LinkedList<T> implements Iterable<T> {
 	}
 
 	/**
-	 * Returns {@link #first} element,
-	 * or null if list is empty.
+	 * Returns {@link #first} element.
 	 * @return The first element of list.
+	 * @throws NoSuchElementException If list is empty.
 	 */
-	public T getFirst() {
-		if (this.size == 0)
-			return null;
+	public T getFirst() throws NoSuchElementException {
+		if (this.first == null)
+			throw new NoSuchElementException();
 		return this.first.item;
 	}
 
 	/**
-	 * Returns {@link #last} element,
-	 * or null if list is empty.
+	 * Returns {@link #last} element.
 	 * @return The last element of list.
+	 * @throws NoSuchElementException If list is empty.
 	 */
 	public T getLast() {
-		if (this.size == 0)
-			return null;
+		if (this.last == null)
+			throw new NoSuchElementException();
 		return this.last.item;
 	}
 
@@ -406,4 +406,3 @@ public class LinkedList<T> implements Iterable<T> {
 		this.size++;
 	}
 }
-// TODO Make getFirst() and getLast() throw an exception

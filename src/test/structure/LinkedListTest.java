@@ -4,6 +4,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+
+import java.util.NoSuchElementException;
+
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -48,8 +51,6 @@ public class LinkedListTest {
 		assertEquals(first, this.list.getFirst());
 		this.list.removeLast();
 		assertEquals(first, this.list.getFirst());
-		this.list.removeLast();
-		assertEquals(null, this.list.getFirst());
 	}
 
 	@Test
@@ -59,20 +60,10 @@ public class LinkedListTest {
 		assertEquals("B", this.list.getFirst());
 		this.list.removeFirst();
 		assertEquals("C", this.list.getFirst());
-		this.list.removeFirst();
-		assertNull(this.list.getFirst());
-	}
-
-	@Test
-	public void getFirst_AfterClearing_IsNull() {
-		fillWithABC(this.list);
-		this.list.clear();
-		assertNull(this.list.getFirst());
 	}
 
 	@Test
 	public void getFirst_EqualsToTheZeroElement() {
-		assertTrue(this.list.getFirst() == this.list.elementAt(0));
 		fillWithABC(this.list);
 		assertTrue(this.list.getFirst() == this.list.elementAt(0));
 	}
@@ -95,11 +86,11 @@ public class LinkedListTest {
 		assertEquals("E", this.list.getFirst());
 	}
 
-	@Test
-	public void getFirst_AfterRemovingAtZeroInSingleItemList_IsNull() {
+	@Test(expected = NoSuchElementException.class)
+	public void getFirst_AfterRemovingAtZeroInSingleItemList_ThrowsException() {
 		this.list.addFirst("A");
 		this.list.removeAt(0);
-		assertNull(this.list.getFirst());
+		this.list.getFirst();
 	}
 
 	@Test
@@ -109,15 +100,13 @@ public class LinkedListTest {
 		assertEquals("B", this.list.getFirst());
 		this.list.removeAt(0);
 		assertEquals("C", this.list.getFirst());
-		this.list.removeAt(0);
-		assertNull(this.list.getFirst());
 	}
 
-	@Test
-	public void getFirst_AfterRemovingInSingleItemList_IsNull() {
+	@Test(expected = NoSuchElementException.class)
+	public void getFirst_AfterRemovingInSingleItemList_ThrowsException() {
 		this.list.addLast("A");
 		this.list.removeFirst();
-		assertNull(this.list.getFirst());
+		this.list.getFirst();
 	}
 
 	@Test
@@ -127,15 +116,13 @@ public class LinkedListTest {
 		assertEquals("B", this.list.getFirst());
 		this.list.removeFirst();
 		assertEquals("C", this.list.getFirst());
-		this.list.removeFirst();
-		assertNull(this.list.getFirst());
 	}
 
-	@Test
-	public void getFirst_AfterRemovingLastInSingleItemList_IsNull() {
+	@Test(expected = NoSuchElementException.class)
+	public void getFirst_AfterRemovingLastInSingleItemList_ThrowsException() {
 		this.list.addLast("A");
 		this.list.removeLast();
-		assertNull(this.list.getFirst());
+		this.list.getFirst();
 	}
 
 	@Test
@@ -145,8 +132,6 @@ public class LinkedListTest {
 		assertEquals("A", this.list.getFirst());
 		this.list.removeLast();
 		assertEquals("A", this.list.getFirst());
-		this.list.removeLast();
-		assertNull(this.list.getFirst());
 	}
 
 	@Test
@@ -170,9 +155,9 @@ public class LinkedListTest {
 		assertEquals("B", this.list.getFirst());
 	}
 
-	@Test
-	public void getFirst_InEmptyList_IsNull() {
-		assertNull(this.list.getFirst());
+	@Test(expected = NoSuchElementException.class)
+	public void getFirst_InEmptyList_ThrowsException() {
+		this.list.getFirst();
 	}
 
 	@Test

@@ -1,6 +1,7 @@
 package test.structure;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -387,10 +388,81 @@ public class LinkedListTest {
 		assertEquals(5, this.list.getSize());
 	}
 
-	public void replaceFirst_AddsAnItemToEmptyList_ReturnsNull() {}
-	public void replaceFirst_ReturnsCorrectItem() {}
-	public void replaceLast_AddsAnItemToEmptyList_ReturnsNull() {}
-	public void replaceLast_ReturnsCorrectItem() {}
+	@Test
+	public void contains_ReturnsCorrectValue() {
+		assertFalse(this.list.contains("A"));
+		assertFalse(this.list.contains(null));
+		var b = "B";
+		this.list.addLast(b);
+		assertTrue(this.list.contains(b));
+		assertTrue(this.list.contains("B"));
+	}
+
+	@Test(expected = NoSuchElementException.class)
+	public void replaceFirst_AtEmptyList_ThrowsException() {
+		this.list.replaceFirst("D");
+	}
+
+	@Test
+	public void replaceFirst_DoesNotChangeSize() {
+		fillWithABC(this.list);
+		this.list.replaceFirst("A");
+		assertEquals(3, this.list.getSize());
+	}
+
+	@Test
+	public void replaceFirst_ReturnsCorrectItem() {
+		fillWithABC(this.list);
+		assertEquals("A", this.list.replaceFirst("D"));
+		assertEquals("D", this.list.replaceFirst("E"));
+	}
+
+	@Test
+	public void replaceFirst_ReallyReplacesItem() {
+		fillWithABC(this.list);
+		this.list.replaceFirst("D");
+		assertEquals("D", this.list.getFirst());
+	}
+
+	@Test
+	public void replaceFirst_InSingleItemList_ReplacesLast() {
+		this.list.addLast("A");
+		this.list.replaceFirst("B");
+		assertEquals("B", this.list.getLast());
+	}
+
+	@Test(expected = NoSuchElementException.class)
+	public void replaceLast_AtEmptyList_ThrowsException() {
+		this.list.replaceLast("D");
+	}
+
+	@Test
+	public void replaceLast_DoesNotChangeSize() {
+		fillWithABC(this.list);
+		this.list.replaceLast("A");
+		assertEquals(3, this.list.getSize());
+	}
+
+	@Test
+	public void replaceLast_ReturnsCorrectItem() {
+		fillWithABC(this.list);
+		assertEquals("C", this.list.replaceLast("D"));
+		assertEquals("D", this.list.replaceLast("E"));
+	}
+
+	@Test
+	public void replaceLast_ReallyReplacesItem() {
+		fillWithABC(this.list);
+		this.list.replaceLast("D");
+		assertEquals("D", this.list.getLast());
+	}
+
+	@Test
+	public void replaceLast_InSingleItemList_ReplacesFirst() {
+		this.list.addLast("A");
+		this.list.replaceLast("B");
+		assertEquals("B", this.list.getFirst());
+	}
 
 	private static void fillWithABC(LinkedList<String> list) {
 		list.addLast("A");

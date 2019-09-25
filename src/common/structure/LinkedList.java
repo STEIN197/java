@@ -115,16 +115,13 @@ public class LinkedList<T> implements Iterable<T> {
 
 	/**
 	 * Replaces the first element in a list with {@code item}.
-	 * It does not add an element, but if list is empty,
-	 * then it just adds an element to the list returning {@code null}.
 	 * @param item Object to be the first in a list.
 	 * @return Previous element that was first. Removes it from list.
+	 * @throws NoSuchElementException If list is empty
 	 */
-	public T replaceFirst(T item){
-		if (this.size == 0) {
-			this.addToEmptyList(item);
-			return null;
-		}
+	public T replaceFirst(T item) throws NoSuchElementException {
+		if (this.size == 0)
+			throw new NoSuchElementException("List is empty");
 		var old = this.first.item;
 		var newItem = new Item<T>(item);
 		this.first = newItem;
@@ -135,16 +132,13 @@ public class LinkedList<T> implements Iterable<T> {
 
 	/**
 	 * Replaces the last element in a list with {@code item}.
-	 * It does not add an element, but if list is empty,
-	 * then it just adds an element to the list returning {@code null}.
 	 * @param item Object to be the last in a list.
 	 * @return Previous element that was last. Removes it from list.
+	 * @throws NoSuchElementException If list is empty
 	 */
-	public T replaceLast(T item){
-		if (this.size == 0) {
-			this.addToEmptyList(item);
-			return null;
-		}
+	public T replaceLast(T item) throws NoSuchElementException {
+		if (this.size == 0)
+			throw new NoSuchElementException("List is empty");
 		var old = this.last.item;
 		var newItem = new Item<T>(item);
 		this.last = newItem;

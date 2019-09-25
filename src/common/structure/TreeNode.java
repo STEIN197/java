@@ -36,6 +36,9 @@ public abstract class TreeNode<T> {
 		this.content = content;
 	}
 
+	/**
+	 * Creates an empty node without any content.
+	 */
 	public TreeNode(){
 		this.content = null;
 	}

@@ -6,7 +6,7 @@ import java.io.PrintStream;
 /**
  * Простой класс для вывода табличных данных в консоль.
  */
-public class ASCIITable implements Printable {
+public class ASCIITable {
 
 	/** Количество колонок в таблице. Минимальное количество колонок в таблице - 1 */
 	public final int cols;

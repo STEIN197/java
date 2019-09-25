@@ -206,7 +206,7 @@ public class LinkedList<T> implements Iterable<T> {
 		for (int i = 0; i < index; i++)
 			cursor = cursor.nextItem;
 		return cursor.item;
-	}
+	} // TODO Make searching start at the end if index > size / 2 so the time complexity will become O(n/2). Do the same in other methods that requires index
 
 	/**
 	 * Replaces element at position {@code index} with {@code item}.

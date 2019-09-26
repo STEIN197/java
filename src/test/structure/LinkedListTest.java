@@ -4,14 +4,12 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
-
-import java.util.NoSuchElementException;
-
 import org.junit.Before;
 import org.junit.Test;
 
-import common.structure.LinkedList;
+import java.util.NoSuchElementException;
 
+import common.structure.LinkedList;
 
 public class LinkedListTest {
 
@@ -463,19 +461,107 @@ public class LinkedListTest {
 		assertEquals("B", this.list.getFirst());
 	}
 
-	public void removeFirst_OnEmptyList_ThrowsException() {}
-	public void removeFirst_OnSingleItemList_RemovesLast() {}
-	public void removeFirst_ReturnsCorrectItem() {}
-	public void removeLast_OnEmptyList_ThrowsException() {}
-	public void removeLast_OnSingleItemList_RemovesFirst() {}
-	public void removeLast_ReturnsCorrectItem() {}
-	public void elementAt_ReturnsCorrectItem() {}
-	public void replaceAt_ReturnsCorrectItem() {}
-	public void replaceAt_ReallyReplacesItem() {}
-	public void removeAt_RemovesCorrectItem() {}
-	public void removeAt_ReallyRemovesItem() {}
-	public void remove_IfItemDoesNotExist_ThrowException() {}
-	public void remove_ReallyRemovesItem() {}
+	@Test(expected = NoSuchElementException.class)
+	public void removeFirst_OnEmptyList_ThrowsException() {
+		this.list.removeFirst();
+	}
+
+	@Test(expected = NoSuchElementException.class)
+	public void removeFirst_OnSingleItemList_RemovesLast() {
+		this.list.addLast("A");
+		this.list.removeFirst();
+		this.list.getLast();
+	}
+
+	@Test
+	public void removeFirst_ReturnsCorrectItem() {
+		fillWithABC(this.list);
+		assertEquals("A", this.list.removeFirst());
+		assertEquals("B", this.list.removeFirst());
+		assertEquals("C", this.list.removeFirst());
+	}
+
+	@Test(expected = NoSuchElementException.class)
+	public void removeLast_OnEmptyList_ThrowsException() {
+		this.list.removeLast();
+	}
+
+	@Test(expected = NoSuchElementException.class)
+	public void removeLast_OnSingleItemList_RemovesFirst() {
+		this.list.addLast("A");
+		this.list.removeLast();
+		this.list.getFirst();
+	}
+
+	@Test
+	public void removeLast_ReturnsCorrectItem() {
+		fillWithABC(this.list);
+		assertEquals("C", this.list.removeLast());
+		assertEquals("B", this.list.removeLast());
+		assertEquals("A", this.list.removeLast());
+	}
+
+	@Test
+	public void elementAt_ReturnsCorrectItem() {
+		fillWithABC(this.list);
+		assertEquals("A", this.list.elementAt(0));
+		assertEquals("B", this.list.elementAt(1));
+		assertEquals("C", this.list.elementAt(2));
+	}
+
+	@Test
+	public void replaceAt_ReturnsCorrectItem() {
+		fillWithABC(this.list);
+		assertEquals("A", this.list.replaceAt(0, "D"));
+		assertEquals("D", this.list.replaceAt(0, "E"));
+		assertEquals("C", this.list.replaceAt(2, "F"));
+		assertEquals("B", this.list.replaceAt(1, "G"));
+	}
+
+	@Test
+	public void replaceAt_ReallyReplacesItem() {
+		fillWithABC(this.list);
+		this.list.replaceAt(0, "D");
+		assertEquals("D", this.list.getFirst());
+		assertEquals("D", this.list.elementAt(0));
+		this.list.replaceAt(2, "E");
+		assertEquals("E", this.list.getLast());
+		assertEquals("E", this.list.elementAt(2));
+	}
+
+	@Test
+	public void removeAt_RemovesCorrectItem() {
+		fillWithABC(this.list);
+		assertEquals("B", this.list.removeAt(1));
+		assertEquals("C", this.list.elementAt(1));
+		assertFalse(this.list.contains("B"));
+	}
+
+	@Test(expected = NoSuchElementException.class)
+	public void remove_IfItemDoesNotExist_ThrowException() {
+		fillWithABC(this.list);
+		this.list.remove("D");
+	}
+
+	@Test
+	public void remove_RemovesCorrectItem() {
+		fillWithABC(this.list);
+		assertEquals("B", this.list.remove("B"));
+		assertFalse(this.list.contains("B"));
+	}
+
+	@Test
+	public void remove_RemovesOnlyFirstOccurence() {
+		fillWithABC(this.list);
+		this.list.addLast("A");
+		this.list.addLast("A");
+		this.list.remove("A");
+		assertTrue(this.list.contains("A"));
+		this.list.remove("A");
+		assertTrue(this.list.contains("A"));
+		this.list.remove("A");
+		assertFalse(this.list.contains("A"));
+	}
 	// TODO insert*, traverse, toArray
 
 	private static void fillWithABC(LinkedList<String> list) {

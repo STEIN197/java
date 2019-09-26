@@ -11,6 +11,9 @@ import java.util.function.UnaryOperator;
  * by index and forth. Each element in this structure has two references:
  * to the previous and to the next element in list. In other words, the list
  * has a form of a chain. It does not use arrays inside to store all items.
+ * <p>
+ * Time complexity of methods that use index as an argument (search/replace methods)
+ * is O(n/2) because the list stores both references - to the end and to the start.
  * @param <T> Type of objects stored in a list.
  */
 public class LinkedList<T> implements Iterable<T> {
@@ -196,11 +199,19 @@ public class LinkedList<T> implements Iterable<T> {
 	public T elementAt(int index) throws ArrayIndexOutOfBoundsException {
 		if (index < 0 || this.size <= index)
 			throw new ArrayIndexOutOfBoundsException(index);
-		Item<T> cursor = this.first;
-		for (int i = 0; i < index; i++)
-			cursor = cursor.nextItem;
+		Item<T> cursor;
+		int middle = this.size / 2;
+		if (index < middle) {
+			cursor = this.first;
+			for (int i = 0; i < index; i++)
+				cursor = cursor.nextItem;
+		} else {
+			cursor = this.last;
+			for (int i = this.size - 1; index != i; i--)
+				cursor = cursor.prevItem;
+		}
 		return cursor.item;
-	} // TODO Make searching start at the end if index > size / 2 so the time complexity will become O(n/2). Do the same in other methods that requires index
+	}
 
 	/**
 	 * Replaces element at position {@code index} with {@code item}.
@@ -212,9 +223,17 @@ public class LinkedList<T> implements Iterable<T> {
 	public T replaceAt(int index, T item) throws ArrayIndexOutOfBoundsException {
 		if (index < 0 || this.size <= index)
 			throw new ArrayIndexOutOfBoundsException(index);
-		var cursor = this.first;
-		for (int i = 0; i < index; i++)
-			cursor = cursor.nextItem;
+		int middle = this.size / 2;
+		Item<T> cursor;
+		if (index < middle) {
+			cursor = this.first;
+			for (int i = 0; i < index; i++)
+				cursor = cursor.nextItem;
+		} else {
+			cursor = this.last;
+			for (int i = this.size - 1; index != i; i--)
+				cursor = cursor.prevItem;
+		}
 		T old = cursor.item;
 		cursor.item = item;
 		return old;
@@ -231,11 +250,19 @@ public class LinkedList<T> implements Iterable<T> {
 			throw new ArrayIndexOutOfBoundsException(index);
 		if (index == 0)
 			return this.removeFirst();
-		if (index + 1 == this.size)
+		if ((index + 1) == this.size)
 			return this.removeLast();
-		Item<T> cursor = this.first;
-		for (int i = 0; i < index; i++)
-			cursor = cursor.nextItem;
+		int middle = this.size / 2;
+		Item<T> cursor;
+		if (index < middle) {
+			cursor = this.first;
+			for (int i = 0; i < index; i++)
+				cursor = cursor.nextItem;
+		} else {
+			cursor = this.last;
+			for (int i = this.size - 1; index != i; i--)
+				cursor = cursor.prevItem;
+		}
 		var prev = cursor.prevItem;
 		var next = cursor.nextItem;
 		prev.nextItem = next;
@@ -253,19 +280,19 @@ public class LinkedList<T> implements Iterable<T> {
 	 */
 	public T remove(T item) throws NoSuchElementException {
 		Item<T> cursor = this.first;
-		if (cursor == null)
-			throw new NoSuchElementException();
-		while (!cursor.item.equals(item) && cursor.nextItem != null)
+		while (cursor != null && !cursor.item.equals(item))
 			cursor = cursor.nextItem;
 		if (cursor == null)
 			throw new NoSuchElementException();
+		if (cursor == this.first)
+			return this.removeFirst();
+		if (cursor == this.last)
+			return this.removeLast();
 		var prev = cursor.prevItem;
 		var next = cursor.nextItem;
 		var old = cursor.item;
-		if (prev != null)
-			prev.nextItem = next;
-		if (next != null)
-			next.prevItem = prev;
+		prev.nextItem = next;
+		next.prevItem = prev;
 		this.size--;
 		return old;
 	}

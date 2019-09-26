@@ -1,5 +1,6 @@
 package test.structure;
 
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
@@ -8,6 +9,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.NoSuchElementException;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import common.structure.LinkedList;
 
@@ -562,7 +564,76 @@ public class LinkedListTest {
 		this.list.remove("A");
 		assertFalse(this.list.contains("A"));
 	}
-	// TODO insert*, traverse, toArray
+
+	@Test
+	public void remove_First_ChangesFirst() {
+		fillWithABC(this.list);
+		this.list.remove("A");
+		assertEquals("B", this.list.getFirst());
+	}
+
+	@Test
+	public void remove_Last_ChangesLast() {
+		fillWithABC(this.list);
+		this.list.remove("C");
+		assertEquals("B", this.list.getLast());
+	}
+
+	@Test
+	public void toArray_ReturnsCorrectArray() {
+		assertArrayEquals(new String[]{}, this.list.toArray());
+		fillWithABC(this.list);
+		assertArrayEquals(new String[]{"A", "B", "C"}, this.list.toArray());
+	}
+
+	@Test
+	public void forEach_IsCorrect() {
+		fillWithABC(this.list);
+		var array = new String[this.list.getSize()];
+		int i = 0;
+		for (String e : this.list) {
+			array[i] = e;
+			i++;
+		}
+		assertArrayEquals(new String[]{"A", "B", "C"}, array);
+	}
+
+	@Test
+	public void traverse_IsCorrect() {
+		fillWithABC(this.list);
+		final var array = new String[this.list.getSize()];
+		AtomicInteger i = new AtomicInteger(0);
+		this.list.traverse(e -> {
+			array[i.get()] = e;
+			i.incrementAndGet();
+			return e;
+		}, false);
+		assertArrayEquals(new String[]{"A", "B", "C"}, array);
+	}
+
+	@Test
+	public void traverse_Reverse_IsCorrect() {
+		fillWithABC(this.list);
+		final var array = new String[this.list.getSize()];
+		AtomicInteger i = new AtomicInteger(0);
+		this.list.traverse(e -> {
+			array[i.get()] = e;
+			i.incrementAndGet();
+			return e;
+		}, true);
+		assertArrayEquals(new String[]{"C", "B", "A"}, array);
+	}
+
+	@Test
+	public void traverse_CanChangeItems() {
+		fillWithABC(this.list);
+		this.list.traverse(e -> {
+			return "A";
+		}, false);
+		assertArrayEquals(new String[]{"A", "A", "A"}, this.list.toArray());
+	}
+
+	// TODO insert*
 
 	private static void fillWithABC(LinkedList<String> list) {
 		list.addLast("A");

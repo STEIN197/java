@@ -13,7 +13,9 @@ import java.util.function.UnaryOperator;
  * has a form of a chain. It does not use arrays inside to store all items.
  * <p>
  * Time complexity of methods that use index as an argument (search/replace methods)
- * is O(n/2) because the list stores both references - to the end and to the start.
+ * is O(n/2) because the list stores both references - to the end and to the start,
+ * so if index at which element is finding is less than size / 2, then traveral will
+ * start from the first element, and vice versa.
  * @param <T> Type of objects stored in a list.
  */
 public class LinkedList<T> implements Iterable<T> {
@@ -320,7 +322,7 @@ public class LinkedList<T> implements Iterable<T> {
 		cursor.nextItem = inserted;
 		next.prevItem = inserted;
 		this.size++;
-	}
+	} // TODO Decrease time complexity to O(n/2)
 	
 	/**
 	 * Inserts item before {@code index} position.
@@ -345,7 +347,7 @@ public class LinkedList<T> implements Iterable<T> {
 		cursor.prevItem = inserted;
 		prev.nextItem = inserted;
 		this.size++;
-	}
+	} // TODO Decrease time complexity to O(n/2)
 
 	/**
 	 * "Cast" list to a regular array.

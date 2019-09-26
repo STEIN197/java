@@ -633,7 +633,14 @@ public class LinkedListTest {
 		assertArrayEquals(new String[]{"A", "A", "A"}, this.list.toArray());
 	}
 
-	// TODO insert*
+	public void insertAfter_AtEmptyList_ThrowsException() {}
+	public void insertAfter_First_IsCorrect() {}
+	public void insertAfter_AtMiddle_IsCorrect() {}
+	public void insertAfter_Last_AddsElement() {}
+	public void insertBefore_AtEmptyList_ThrowsException() {}
+	public void insertBefore_First_AddsElement() {}
+	public void insertBefore_AtMiddle_IsCorrect() {}
+	public void insertBefore_Last_IsCorrect() {}
 
 	private static void fillWithABC(LinkedList<String> list) {
 		list.addLast("A");

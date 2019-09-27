@@ -633,14 +633,59 @@ public class LinkedListTest {
 		assertArrayEquals(new String[]{"A", "A", "A"}, this.list.toArray());
 	}
 
-	public void insertAfter_AtEmptyList_ThrowsException() {}
-	public void insertAfter_First_IsCorrect() {}
-	public void insertAfter_AtMiddle_IsCorrect() {}
-	public void insertAfter_Last_AddsElement() {}
-	public void insertBefore_AtEmptyList_ThrowsException() {}
-	public void insertBefore_First_AddsElement() {}
-	public void insertBefore_AtMiddle_IsCorrect() {}
-	public void insertBefore_Last_IsCorrect() {}
+	@Test(expected = ArrayIndexOutOfBoundsException.class)
+	public void insertAfter_AtEmptyList_ThrowsException() {
+		this.list.insertAfter(0, "D");
+	}
+
+	@Test
+	public void insertAfter_First_IsCorrect() {
+		fillWithABC(this.list);
+		this.list.insertAfter(0, "D");
+		assertArrayEquals(new String[]{"A", "D", "B", "C"}, this.list.toArray());
+	}
+
+	@Test
+	public void insertAfter_AtMiddle_IsCorrect() {
+		fillWithABC(this.list);
+		this.list.insertAfter(1, "D");
+		assertArrayEquals(new String[]{"A", "B", "D", "C"}, this.list.toArray());
+	}
+
+	@Test
+	public void insertAfter_Last_AddsElement() {
+		fillWithABC(this.list);
+		this.list.insertAfter(2, "D");
+		assertArrayEquals(new String[]{"A", "B", "C", "D"}, this.list.toArray());
+		assertEquals("D", this.list.getLast());
+	}
+
+	@Test(expected = ArrayIndexOutOfBoundsException.class)
+	public void insertBefore_AtEmptyList_ThrowsException() {
+		this.list.insertBefore(0, "D");
+	}
+
+	@Test
+	public void insertBefore_First_AddsElement() {
+		fillWithABC(this.list);
+		this.list.insertBefore(0, "D");
+		assertArrayEquals(new String[]{"D", "A", "B", "C"}, this.list.toArray());
+		assertEquals("D", this.list.getFirst());
+	}
+
+	@Test
+	public void insertBefore_AtMiddle_IsCorrect() {
+		fillWithABC(this.list);
+		this.list.insertBefore(1, "D");
+		assertArrayEquals(new String[]{"A", "D", "B", "C"}, this.list.toArray());
+	}
+
+	@Test
+	public void insertBefore_Last_IsCorrect() {
+		fillWithABC(this.list);
+		this.list.insertBefore(2, "D");
+		assertArrayEquals(new String[]{"A", "B", "D", "C"}, this.list.toArray());
+	}
 
 	private static void fillWithABC(LinkedList<String> list) {
 		list.addLast("A");

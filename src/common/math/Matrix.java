@@ -1,52 +1,50 @@
 package common.math;
 
-import java.io.PrintStream;
 import java.util.function.DoubleFunction;
-import common.Printable;
 
 /**
- * Класс для работы с математическими матрицами.
- * Здесь перечислены все доступные операции над матрицами, такие как
- * умножение, деление, сложение и т.д. Любые действия так или иначе затрагивающие структуру матрицы
- * создают новый объект
+ * Class fow working with mathematical matrixes of doubles.
  */
-public class Matrix implements Cloneable, Printable {
+public class Matrix {
 
-	/** Количество строк в матрице */
+	/** Number of rows */
 	public final int rows;
-	/** Количество столбцов матрицы */
+	/** Number of cols */
 	public final int cols;
-	/** Внутреннее представление матрицы в виде двумерного массива */
-	public final double[][] matrix;
-
-	/** Ранг матрицы */
+	/** Inner representation, actual matrix */
+	private double[][] matrix;
+	/** Matrix rang */
 	private int rang = -1;
 
 	/**
-	 * Создаёт матрицу с уже предопределёнными числовыми значениями
-	 * @param matrix Двумерный массив числовых значений
+	 * Creates matrix with predefined values.
+	 * Copies all the contens in {@code matrix} to the new one.
+	 * @param matrix Array of double elements to be copied.
 	 */
-	public Matrix(double[][] matrix){
-		this.matrix = matrix;
+	public Matrix(double[][] matrix) {
 		this.rows = matrix.length;
 		this.cols = matrix[0].length;
+		this.matrix = new double[this.rows][this.cols];
+		for (int i = 0; i < matrix.length; i++)
+			System.arraycopy(matrix[i], 0, this.matrix[i], 0, this.cols);
 	}
 
 	/**
-	 * Создаёт пустую матрицу заданной размерности, все значения заполняются нулями
-	 * @param rows Количество строк
-	 * @param cols Количество столбцов
+	 * Creates empty matrix of size {@code rows x cols}.
+	 * @param rows Number of rows.
+	 * @param cols Number of cols.
 	 */
-	public Matrix(int rows, int cols){
+	public Matrix(int rows, int cols) {
 		this.matrix = new double[rows][cols];
 		this.rows = rows;
 		this.cols = cols;
 	}
 
 	/**
-	 * Проверяет на равенство размерности текущую и переданную матрицу
-	 * @param Matrix Матрица, размерность которой сравнивается с размерностью текущей
-	 * @return {@code true} если обе матрицы одного размера
+	 * Checks the matrix and {@code mx} matrix for equality
+	 * of dimensions.
+	 * @param Matrix Matrix against which the current one is checked.
+	 * @return {@code true} if both matrixes have same size.
 	 */
 	public boolean hasIdenticalDimensions(Matrix mx){
 		return this.rows == mx.rows && this.cols == mx.cols;
@@ -245,7 +243,6 @@ public class Matrix implements Cloneable, Printable {
 		int result = 12;
 		long tmp;
 		result = 31 * result + this.rows;
-		result = 31 * result + this.cols;
 		for(int row = 0; row < this.rows; row++)
 			for(int col = 0; col < this.cols; col++){
 				tmp = Double.doubleToLongBits(this.matrix[row][col]);
@@ -253,45 +250,5 @@ public class Matrix implements Cloneable, Printable {
 			}
 		return result;
 	}
-
-	@Override
-	public void print(PrintStream output){
-		int[] max = new int[this.cols]; // Хранит количество символов, нужного для представления каждого столбца
-		StringBuilder result = new StringBuilder();
-		for(int row = 0; row < this.rows; row++){
-			for(int col = 0; col < this.cols; col++){
-				int length = Double.toString(this.matrix[row][col]).length();
-				if(max[col] < length)
-					max[col] = length;
-			}
-		}
-		for(int row = 0; row < this.rows; row++){
-			for(int col = 0; col < this.cols; col++){
-				result.append('+');
-				for(int i = 0; i < max[col]; i++){
-					result.append('-');
-				}
-			}
-			result.append('+').append('\n');
-			for(int col = 0; col < this.cols; col++){
-				result.append('|');
-				int length = Double.toString(this.matrix[row][col]).length();
-				int spaces = max[col] - length;
-				result.append(this.matrix[row][col]);
-				for(int i = 0; i < spaces; i++){
-					result.append(' ');
-				}
-			}
-			result.append('|').append('\n');
-		}
-		for(int col = 0; col < this.cols; col++){
-			result.append('+');
-			for(int i = 0; i < max[col]; i++){
-				result.append('-');
-			}
-		}
-		result.append('+');
-		output.println(result);
-	}
-
 }
+// TODO Matrix rang, tests

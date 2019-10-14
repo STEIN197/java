@@ -59,7 +59,7 @@ public abstract class Tree<T> {
 	 * the nodes in tree and calculate depth of only leaf nodes.
 	 * @return Height of tree.
 	 */
-	public int getHeight(){
+	public int getHeight() {
 		var height = new AtomicInteger(0);
 		this.traverse(node -> {
 			if(!node.isLeaf())
@@ -75,32 +75,21 @@ public abstract class Tree<T> {
 	 * Returns root node of a tree.
 	 * @return Root node or null if tree is empty (i.e. it has no root).
 	 */
-	public final TreeNode<T> getRoot(){
+	public final TreeNode<T> getRoot() {
 		return this.root;
 	}
 
 	/**
-	 * Sets tree's root if it is null yet.
-	 * Otherwise does nothing.
+	 * Sets tree's root if it is still null.
 	 * @param node A node to be a root.
+	 * @throws IllegalStateException If root node is already set.
 	 */
-	public void setRoot(TreeNode<T> node){
-		if(this.root == null)
+	public void setRoot(TreeNode<T> node) throws IllegalStateException {
+		if (this.root == null)
 			this.root = node;
+		else
+			throw new IllegalStateException("Root node is already specified");
 	}
-
-	/**
-	 * Returns subtree of current tree with root node at
-	 * {@code node}. The {@code node} argument should be child of
-	 * current tree.
-	 * @param node A node that new subtree consider as root.
-	 * @throws Exception If current tree has no child equals to {@code node}
-	 *                   or if three has no root element.
-	 * @return New tree retrieved from current.
-	 */
-	public abstract Tree<T> getSubtree(TreeNode<T> node) throws Exception;
-
-	// public abstract boolean isBalanced();
 
 	/**
 	 * Makes a traversal through entire tree. There might be 4 ways

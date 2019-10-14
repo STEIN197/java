@@ -39,19 +39,6 @@ public class RegularTree<T> extends Tree<T> {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Tree<T> getSubtree(TreeNode<T> node) throws Exception {
-		if (this.root == null)
-			throw new Exception("Tree has no root element");
-		else if (!this.root.hasNode(node))
-			throw new Exception("Tree has no supplied child element");
-		else
-			return new RegularTree<T>(node);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
 	protected void traverseBreadthFirst(Consumer<TreeNode<T>> fn) {
 		var queue = new Queue<TreeNode<T>>(this.root);
 		while (queue.size() > 0) {

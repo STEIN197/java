@@ -4,6 +4,7 @@ import java.util.function.DoubleFunction;
 
 /**
  * Class fow working with mathematical matrixes of doubles.
+ * Every operation that produce new matrix creates new object.
  */
 public class Matrix {
 
@@ -13,7 +14,7 @@ public class Matrix {
 	public final int cols;
 	/** Inner representation, actual matrix */
 	private double[][] matrix;
-	/** Matrix rang */
+	/** Matrix rang. Minus one represents that rang didn't calculated */
 	private int rang = -1;
 
 	/**
@@ -46,15 +47,15 @@ public class Matrix {
 	 * @param Matrix Matrix against which the current one is checked.
 	 * @return {@code true} if both matrixes have same size.
 	 */
-	public boolean hasIdenticalDimensions(Matrix mx){
+	public boolean hasIdenticalDimensions(Matrix mx) {
 		return this.rows == mx.rows && this.cols == mx.cols;
 	}
 
 	/**
-	 * Складывает две матрицы
-	 * @param mx Матрица с которой складывается текущая
-	 * @return Новую матрицу
-	 * @throws Exception Если матрицы имеют несовместимые размеры
+	 * Adds two matrixes
+	 * @param mx Matrix to add to the current one.
+	 * @return New matrix, result of addition.
+	 * @throws Exception If two matrixes have different dimensions.
 	 */
 	public Matrix add(Matrix mx) throws Exception {
 		if(this.hasIdenticalDimensions(mx))
@@ -67,10 +68,9 @@ public class Matrix {
 	}
 
 	/**
-	 * Умножает матрицу на указанное число.
-	 * Умножение производится поэлементным умножением на {@code n}
-	 * @param n Число на которое умножается матрица
-	 * @return Новую матрицу
+	 * Mupltiplies matrix by {@code n number}.
+	 * @param n Number by which matrix is multiplied.
+	 * @return New matrix.
 	 */
 	public Matrix multipleByNumber(double n){
 		Matrix mx = this.clone();

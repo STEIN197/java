@@ -1,10 +1,7 @@
 {
 	"folders": [
 		{
-			"path": "."
+			"path": ".",
 		}
-	],
-	"settings": {
-		"java.dependency.syncWithFolderExplorer": false
-	}
+	]
 }

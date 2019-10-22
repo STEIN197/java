@@ -1,7 +1,5 @@
 package common.structure;
 
-import java.util.NoSuchElementException;
-
 /**
  * Basic class for all node types that {@link Tree<T>} subclasses
  * contain. It may be node for binary trees, of node for regular trees.
@@ -103,47 +101,7 @@ public abstract class TreeNode<T> {
 	 * and its parent. I.e. removes so-called "edge" between them.
 	 * Does nothing if node does not have parent.
 	 */
-	public void unleash() {
-		if (this.parent == null)
-			return;
-		this.parent.removeNode(this);
-	}
-
-	/**
-	 * Removes child node from current node. If node has
-	 * more than one children equal to {@code node}, then
-	 * the first occurence will be removed.
-	 * @param node A node to be removed.
-	 * @return Removed node.
-	 * @throws NoSuchElementException If there is no {@code node} child in node.
-	 */
-	public abstract TreeNode<T> removeNode(TreeNode<T> node) throws NoSuchElementException;
-
-	/**
-	 * Removes child node from current, if any of children
-	 * has content in way that expression {@code content.equals(node.content)}
-	 * evaluates to {@code true}. It is the same as {@link #removeNode(TreeNode)},
-	 * except that argument is not wrapper. If node has
-	 * more than one children equal to {@code node}, then
-	 * the first occurence will be removed.
-	 * @param content Node with this object inside will be removed.
-	 * @return Removed child.
-	 * @throws NoSuchElementException If there is no {@code content} child in node.
-	 */
-	public abstract TreeNode<T> removeNode(T content) throws NoSuchElementException;
-
-	/**
-	 * Check if node has specified child.
-	 * @param node A node is considered as child of current node.
-	 * @return {@code true} if current node has {@code node} child.
-	 */
-	public abstract boolean hasNode(TreeNode<T> node);
-
-	/**
-	 * Returns an array of children of current node.
-	 * @return An array.
-	 */
-	public abstract TreeNode<T>[] getChildren();
+	public abstract void unleash();
 
 	@Override
 	public final int hashCode(){

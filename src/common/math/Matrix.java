@@ -210,17 +210,6 @@ public class Matrix {
 		return clone;
 	}
 
-	@Override
-	public boolean equals(Object mx){
-		if(this == mx)
-			return true;
-		if(this == null)
-			return true;
-		if(mx instanceof Matrix)
-			return this.equals((Matrix) mx);
-		return false;
-	}
-
 	/**
 	 * Проверяет, являются ли две матрицы равными.
 	 * Матрицы считаются равными, если они имеют одинаковую размерность и
@@ -236,19 +225,6 @@ public class Matrix {
 				if(this.matrix[row][col] != mx.matrix[row][col])
 					return false;
 		return true;
-	}
-
-	@Override
-	public int hashCode(){
-		int result = 12;
-		long tmp;
-		result = 31 * result + this.rows;
-		for(int row = 0; row < this.rows; row++)
-			for(int col = 0; col < this.cols; col++){
-				tmp = Double.doubleToLongBits(this.matrix[row][col]);
-				result = 31 * result + ((int) (tmp ^ (tmp >>> 32)));
-			}
-		return result;
 	}
 }
 // TODO Matrix rang, tests

@@ -86,15 +86,7 @@ public abstract class TreeNode<T> {
 	 * Leaf node is a node that has no children.
 	 * @return {@code true} if current node is leaf.
 	 */
-	public final boolean isLeaf(){
-		return this.getChildNodesCount() == 0;
-	}
-
-	/**
-	 * Returns an amount of children.
-	 * @return Amount of child nodes corresponding to the current node.
-	 */
-	public abstract int getChildNodesCount();
+	public abstract boolean isLeaf();
 
 	/**
 	 * Destroys bidirectional bonds between current node

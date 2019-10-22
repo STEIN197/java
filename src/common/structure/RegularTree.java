@@ -15,7 +15,7 @@ public class RegularTree<T> extends Tree<T> {
 	 * Creates a tree with {@code root} root node.
 	 * @param root Node to be a root.
 	 */
-	public RegularTree(TreeNode<T> node) {
+	public RegularTree(Node<T> node) {
 		super(node);
 	}
 
@@ -40,10 +40,10 @@ public class RegularTree<T> extends Tree<T> {
 	 */
 	@Override
 	protected void traverseBreadthFirst(Consumer<TreeNode<T>> fn) {
-		var queue = new Queue<TreeNode<T>>(this.root);
+		var queue = new Queue<Node<T>>((Node<T>) this.root);
 		while (queue.size() > 0) {
 			var currentNode = queue.dequeue();
-			TreeNode<T>[] children = currentNode.getChildren();
+			Node<T>[] children = currentNode.getChildren();
 			for (var node : children)
 				queue.inqueue(node);
 			fn.accept(currentNode);
@@ -55,7 +55,7 @@ public class RegularTree<T> extends Tree<T> {
 	 */
 	@Override
 	protected void traversePreOrder(Consumer<TreeNode<T>> fn) {
-		this.traversePreOrder(fn, this.root);
+		this.traversePreOrder(fn, (Node<T>) this.root);
 	}
 
 	/**
@@ -63,7 +63,7 @@ public class RegularTree<T> extends Tree<T> {
 	 */
 	@Override
 	protected void traversePostOrder(Consumer<TreeNode<T>> fn) {
-		this.traversePostOrder(fn, this.root);
+		this.traversePostOrder(fn, (Node<T>) this.root);
 	}
 	
 	/**
@@ -71,13 +71,13 @@ public class RegularTree<T> extends Tree<T> {
 	 */
 	@Override
 	protected void traverseInOrder(Consumer<TreeNode<T>> fn) {
-		this.traverseInOrder(fn, this.root);
+		this.traverseInOrder(fn, (Node<T>) this.root);
 	}
 
 	/**
 	 * @see {@link #traversePreOrder(Consumer)}
 	 */
-	private void traversePreOrder(Consumer<TreeNode<T>> fn, TreeNode<T> node) {
+	private void traversePreOrder(Consumer<TreeNode<T>> fn, Node<T> node) {
 		fn.accept(node);
 		var children = node.getChildren();
 		for (var child : children)
@@ -87,7 +87,7 @@ public class RegularTree<T> extends Tree<T> {
 	/**
 	 * @see {@link #traversePostOrder(Consumer)}
 	 */
-	private void traversePostOrder(Consumer<TreeNode<T>> fn, TreeNode<T> node) {
+	private void traversePostOrder(Consumer<TreeNode<T>> fn, Node<T> node) {
 		var children = node.getChildren();
 		for (var child : children)
 			if (child.isLeaf())
@@ -100,7 +100,7 @@ public class RegularTree<T> extends Tree<T> {
 	/**
 	 * @see {@link #traverseInOrder(Consumer)}
 	 */
-	private void traverseInOrder(Consumer<TreeNode<T>> fn, TreeNode<T> node) {
+	private void traverseInOrder(Consumer<TreeNode<T>> fn, Node<T> node) {
 		var children = node.getChildren();
 		for (int i = 0; i < children.length; i++) {
 			var child = children[i];
@@ -121,7 +121,7 @@ public class RegularTree<T> extends Tree<T> {
 	public static class Node<T> extends TreeNode<T> {
 
 		/** Stores child nodes relate to current node */
-		private LinkedList<TreeNode<T>> children = new LinkedList<>(); // TODO Replace it with HashTable in future for constant time operations
+		private LinkedList<Node<T>> children = new LinkedList<>(); // TODO Replace it with HashTable in future for constant time operations
 
 		/**
 		 * Creates a node with specified content and parent node.
@@ -129,7 +129,7 @@ public class RegularTree<T> extends Tree<T> {
 		 * @param parent A node that is to be parent for current.
 		 *               {@code null} if node does not have parent.
 		 */
-		public Node(T content, TreeNode<T> parent){
+		public Node(T content, Node<T> parent){
 			super(content, parent);
 		}
 
@@ -149,28 +149,31 @@ public class RegularTree<T> extends Tree<T> {
 		}
 
 		/**
-		 * {@inheritDoc}
+		 * Removes child node from current node. If node has
+		 * more than one children equal to {@code node}, then
+		 * the first occurence will be removed.
+		 * @param node A node to be removed.
+		 * @return Removed node.
+		 * @throws NoSuchElementException If there is no {@code node} child in node.
 		 */
-		@Override
-		public int getChildNodesCount() {
-			return this.children.getSize();
-		}
-
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		public TreeNode<T> removeNode(TreeNode<T> node) throws NoSuchElementException {
-			TreeNode<T> old = this.children.remove(node);
+		public Node<T> removeNode(Node<T> node) throws NoSuchElementException {
+			Node<T> old = this.children.remove(node);
 			old.parent = null;
 			return old;
 		}
 
 		/**
-		 * {@inheritDoc}
+		 * Removes child node from current, if any of children
+		 * has content in way that expression {@code content.equals(node.content)}
+		 * evaluates to {@code true}. It is the same as {@link #removeNode(TreeNode)},
+		 * except that argument is not wrapper. If node has
+		 * more than one children equal to {@code node}, then
+		 * the first occurence will be removed.
+		 * @param content Node with this object inside will be removed.
+		 * @return Removed child.
+		 * @throws NoSuchElementException If there is no {@code content} child in node.
 		 */
-		@Override
-		public TreeNode<T> removeNode(T content) {
+		public Node<T> removeNode(T content) throws NoSuchElementException {
 			return this.removeNode(new Node<T>(content));
 		}
 
@@ -193,20 +196,39 @@ public class RegularTree<T> extends Tree<T> {
 		}
 
 		/**
-		 * {@inheritDoc}
+		 * Check if node has specified child.
+		 * @param node A node is considered as child of current node.
+		 * @return {@code true} if current node has {@code node} child.
 		 */
-		@Override
-		public boolean hasNode(TreeNode<T> node) {
+		public boolean hasNode(Node<T> node) {
 			return this.children.contains(node);
+		}
+
+		/**
+		 * Returns an array of children of current node.
+		 * @return An array.
+		 */
+		public Node<T>[] getChildren() {
+			return this.children.toArray();
 		}
 
 		/**
 		 * {@inheritDoc}
 		 */
 		@Override
-		public TreeNode<T>[] getChildren() {
-			return this.children.toArray();
+		public void unleash() {
+			if (this.parent == null)
+				return;
+			((Node<T>) this.parent).removeNode(this);
+		}
+
+		/**
+		 * {@inheritDoc}
+		 */
+		@Override
+		public boolean isLeaf() {
+			return this.children.getSize() == 0;
 		}
 	}
 }
-// TODO Make tests
+// TODO Make tests, replace recursive in-depth methods to stack object

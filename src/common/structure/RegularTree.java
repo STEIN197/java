@@ -149,32 +149,37 @@ public class RegularTree<T> extends Tree<T> {
 		}
 
 		/**
-		 * Removes child node from current node. If node has
-		 * more than one children equal to {@code node}, then
-		 * the first occurence will be removed.
+		 * Removes child node from current node by reference.
+		 * It does not remove node by equality and as result, call of
+		 * {@link #removeNode(T)} is not always equal to call of this method.
 		 * @param node A node to be removed.
-		 * @return Removed node.
-		 * @throws NoSuchElementException If there is no {@code node} child in node.
+		 * @throws NoSuchElementException If there is no {@code node} child in the node.
 		 */
-		public Node<T> removeNode(Node<T> node) throws NoSuchElementException {
-			Node<T> old = this.children.remove(node);
-			old.parent = null;
-			return old;
+		public void removeNode(Node<T> node) throws NoSuchElementException {
+			var siblings = this.getChildren();
+			for (int i = 0; i < siblings.length; i++) {
+				if (siblings[i] == node) {
+					node.parent = null;
+					this.children.removeAt(i);
+					return;
+				}
+			}
+			throw new NoSuchElementException("There is no " + node.toString() + " child node");
 		}
 
 		/**
-		 * Removes child node from current, if any of children
-		 * has content in way that expression {@code content.equals(node.content)}
-		 * evaluates to {@code true}. It is the same as {@link #removeNode(TreeNode)},
-		 * except that argument is not wrapper. If node has
+		 * Removes child node from current. If node has
 		 * more than one children equal to {@code node}, then
-		 * the first occurence will be removed.
+		 * the first occurence will be removed. Unlike {@link #removeNode(Node)},
+		 * this method checks only by calling {@code equals()} method.
 		 * @param content Node with this object inside will be removed.
 		 * @return Removed child.
 		 * @throws NoSuchElementException If there is no {@code content} child in node.
 		 */
 		public Node<T> removeNode(T content) throws NoSuchElementException {
-			return this.removeNode(new Node<T>(content));
+			Node<T> old = this.children.remove(new Node<T>(content));
+			old.parent = null;
+			return old;
 		}
 
 		/**

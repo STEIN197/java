@@ -82,9 +82,15 @@ public class LinkedList<T> implements Iterable<T> {
 	 * @return {@code true} if list contains the item.
 	 */
 	public boolean contains(T item) {
-		for (T e : this)
-			if (item.equals(e))
-				return true;
+		for (T e : this) {
+			if (item == null) {
+				if (e == null)
+					return true;
+			} else {
+				if (item.equals(e))
+					return true;
+			}
+		}
 		return false;
 	}
 

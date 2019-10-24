@@ -67,7 +67,7 @@ public abstract class TreeNode<T> {
 
 	/**
 	 * Returns depth of the current node.
-	 * If it does not have parent then its depth is 1 (or if it root which might mean the same).
+	 * If it does not have parent then its depth is 1 (or if it root which means the same).
 	 * @return Depth of the node.
 	 */
 	public final int getDepth(){
@@ -92,6 +92,8 @@ public abstract class TreeNode<T> {
 	 * Destroys bidirectional bonds between current node
 	 * and its parent. I.e. removes so-called "edge" between them.
 	 * Does nothing if node does not have parent.
+	 * It may seem that this method removes node from its parent,
+	 * actually it removes it by reference, not by {@link #equals()}.
 	 */
 	public abstract void unleash();
 
@@ -102,6 +104,10 @@ public abstract class TreeNode<T> {
 
 	@Override
 	public final boolean equals(Object obj){
+		if (obj == null)
+			return false;
+		if (obj instanceof TreeNode)
+			return this.content.equals(((TreeNode) obj).content);
 		return this.content.equals(obj);
 	}
 }

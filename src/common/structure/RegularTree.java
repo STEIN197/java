@@ -196,6 +196,16 @@ public class RegularTree<T> extends Tree<T> {
 		}
 
 		/**
+		 * Check if node has specified child
+		 * that contains {@code content} item inside.
+		 * @param content A content is considered as child of current node.
+		 * @return {@code true} if current node has child node with {@code content} content inside.
+		 */
+		public boolean hasNode(T content) {
+			return this.hasNode(new Node<T>(content));
+		}
+
+		/**
 		 * Check if node has specified child.
 		 * @param node A node is considered as child of current node.
 		 * @return {@code true} if current node has {@code node} child.
@@ -219,7 +229,15 @@ public class RegularTree<T> extends Tree<T> {
 		public void unleash() {
 			if (this.parent == null)
 				return;
-			((Node<T>) this.parent).removeNode(this);
+			var parent = (Node<T>) this.parent;
+			var siblings = parent.getChildren();
+			for (int i = 0; i < siblings.length; i++) {
+				if (siblings[i] == this) {
+					this.parent = null;
+					parent.children.removeAt(i);
+					return;
+				}
+			}
 		}
 
 		/**

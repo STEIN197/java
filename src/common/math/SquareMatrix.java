@@ -48,13 +48,15 @@ public class SquareMatrix extends Matrix {
 			return this.dt;
 	}
 
-	// public boolean isIdentical(){
+	public boolean isIdentical(){
+		return false;
+		// TODO Implement method
+	}
 
-	// }
-
-	// public SquareMatrix getReverse(){
-		
-	// }
+	public SquareMatrix getReverse(){
+		return null;
+		// TODO Implement method
+	}
 
 	/**
 	 * Возвращает детерминант для матрицы {@code 2x2}
@@ -80,7 +82,8 @@ public class SquareMatrix extends Matrix {
 		return (primaryD + primaryT1 + primaryT2) - (secondaryD + secondaryT1 + secondaryT2);
 	}
 
-	// private double getCommonDt(){
-		
-	// }
+	private double getCommonDt(){
+		return 0;
+		// TODO implement method
+	}
 }

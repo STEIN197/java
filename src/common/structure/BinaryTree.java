@@ -1,20 +1,20 @@
 package common.structure;
 
-import java.util.LinkedList;
 import java.util.function.Consumer;
 
 public class BinaryTree<T> extends Tree<T> {
 
 	@Override
-	public Tree<T> getSubtree(TreeNode<T> node) throws Exception {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	protected void traverseBreadthFirst(Consumer<TreeNode<T>> fn) {
-		// TODO Auto-generated method stub
-
+		var queue = new Queue<Node<T>>((Node<T>) this.root);
+		while (queue.size() > 0) {
+			var currentNode = queue.dequeue();
+			if (currentNode.left != null)
+				queue.inqueue(currentNode.left);
+			if (currentNode.right != null)
+				queue.inqueue(currentNode.right);
+			fn.accept(currentNode);
+		}
 	}
 
 	@Override
@@ -31,9 +31,17 @@ public class BinaryTree<T> extends Tree<T> {
 
 	@Override
 	protected void traversePreOrder(Consumer<TreeNode<T>> fn) {
-		// TODO Auto-generated method stub
-
+		var stack = new Stack<Node<T>>((Node<T>) this.root);
+		while (stack.size() > 0) {
+			var currentNode = stack.pop();
+			if (currentNode.left != null)
+				stack.push(currentNode.left);
+			if (currentNode.right != null)
+				stack.push(currentNode.right);
+			fn.accept(currentNode);
+		}
 	}
+
 	public static class Node<T> extends TreeNode<T> {
 
 		/** Reference to the left child */
@@ -41,70 +49,29 @@ public class BinaryTree<T> extends Tree<T> {
 		/** Reference to the right child */
 		protected Node<T> right;
 
+		/**
+		 * Creates a node with specified content and parent node.
+		 * @param content Object is stored inside node.
+		 * @param parent A node that is to be parent for current.
+		 *               {@code null} if node does not have parent.
+		 */
 		public Node(T content, Node<T> parent) {
 			super(content, parent);
 		}
 
+		/**
+		 * Default constructor for nodes.
+		 * @param content Object is stored inside node.
+		 */
 		public Node(T content) {
 			super(content);
 		}
 
+		/**
+		 * Creates an empty node without any content.
+		 */
 		public Node() {
 			super();
-		}
-
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		public int getChildNodesCount() {
-			int count = 0;
-			if (this.left != null)
-				count++;
-			if (this.right != null)
-				count++;
-			return count;
-		}
-
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		public TreeNode<T>[] getChildren() {
-			var children = new LinkedList<TreeNode<T>>();
-			if (this.left != null)
-				children.add(this.left);
-			if (this.right != null)
-				children.add(this.right);
-			return (TreeNode<T>[]) children.toArray();
-		}
-
-		@Override
-		public boolean hasNode(TreeNode<T> node) {
-			return
-				this.left != null && this.left.equals(node)
-					||
-				this.right != null && this.right.equals(node);
-		}
-
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		public TreeNode<T> removeNode(TreeNode<T> node) {
-			if (this.left != null && this.left.equals(node))
-				return this.removeLeft();
-			if (this.right != null && this.right.equals(node))
-				return this.removeRight();
-			return null;
-		}
-
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		public TreeNode<T> removeNode(T content) {
-			return this.removeNode(new Node<T>(content));
 		}
 
 		/**
@@ -191,6 +158,29 @@ public class BinaryTree<T> extends Tree<T> {
 		 */
 		public Node<T> setRight(T content) {
 			return this.setRight(new Node<T>(content));
+		}
+
+		/**
+		 * {@inheritDoc}
+		 */
+		@Override
+		public boolean isLeaf() {
+			return this.left == null && this.right == null;
+		}
+
+		/**
+		 * {@inheritDoc}
+		 */
+		@Override
+		public void unleash() {
+			if (this.parent == null)
+				return;
+			var parent = (Node<T>) this.parent;
+			this.parent = null;
+			if (parent.left == this)
+				parent.left = null;
+			else
+				parent.right = null;
 		}
 	}
 }

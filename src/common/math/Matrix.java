@@ -13,7 +13,7 @@ public class Matrix {
 	/** Number of cols */
 	public final int cols;
 	/** Inner representation, actual matrix */
-	private double[][] matrix;
+	protected double[][] matrix;
 	/** Matrix rang. Minus one represents that rang didn't calculated */
 	private int rang = -1;
 

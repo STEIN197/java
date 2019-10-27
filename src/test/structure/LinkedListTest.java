@@ -397,6 +397,19 @@ public class LinkedListTest {
 		assertTrue(this.list.contains("B"));
 	}
 
+	@Test
+	public void contains_CanAccept_Null() {
+		fillWithABC(this.list);
+		assertFalse(this.list.contains(null));
+	}
+
+	@Test
+	public void contains_IfNullIsPresent_ReturnsTrue() {
+		fillWithABC(this.list);
+		this.list.addLast(null);
+		assertTrue(this.list.contains(null));
+	}
+
 	@Test(expected = NoSuchElementException.class)
 	public void replaceFirst_AtEmptyList_ThrowsException() {
 		this.list.replaceFirst("D");

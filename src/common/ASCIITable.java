@@ -63,18 +63,6 @@ public class ASCIITable {
 		return this;
 	}
 
-	@Override
-	public void print(PrintStream out){
-		var output = new StringBuilder();
-		var rowsCount = this.rows.size();
-		for(int i = 0; i < rowsCount; i++){
-			this.drawBorder(output);
-			this.drawRow(output, i);
-		}
-		this.drawBorder(output);
-		out.println(output);
-	}
-
 	/**
 	 * Устанавливает фиксированную ширину для столбца с указанным номером.
 	 * При этом контент, превышающий ширину колонки будет разбит на несколько строк

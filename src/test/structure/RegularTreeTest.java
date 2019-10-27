@@ -61,7 +61,7 @@ public class RegularTreeTest {
 
 		@Test
 		public void getDepth_IsCorrect() {
-			assertEquals(5, getABCDEChain());
+			assertEquals(5, getABCDEChain().getDepth());
 		}
 
 		public void isLeaf_WhenChildrenAreNotPresent_IsTrue() {}
@@ -108,9 +108,9 @@ public class RegularTreeTest {
 			);
 		}
 
-		private static RegularTree.Node<String> getChain(int depth) {
+		// private static RegularTree.Node<String> getChain(int depth) {
 			
-		}
+		// }
 
 		private static RegularTree.Node<String> getChilded(int count) {
 			var nodeA = new RegularTree.Node<String>("A");

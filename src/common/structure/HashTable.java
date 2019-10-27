@@ -45,35 +45,8 @@ public class HashTable<K, V> {
 	}
 
 	public V set(K key, V value) {
-		if (key == null)
-			throw new IllegalArgumentException(MESSAGE_KEY_IS_NULL);
-		int index = this.getIndex(key);
-		// Add value to empty cell
-		if (this.values[index] == null) {
-			if (this.tableHasReachedLimit()) {
-				
-			} else {
-				this.values[index] = new LinkedList<Pair<K, V>>(new Pair(key, value));
-				this.size++;
-				return null;
-			}
-		// Add value at existing list
-		} else {
-			@SuppressWarnings(value = "unchecked")
-			var list = (LinkedList<Pair<K, V>>) this.values[index];
-			Iterator<Pair<K, V>> iterator = list.iterator();
-			Pair<K, V> current = null;
-			while (iterator.hasNext() && !(current = iterator.next()).key.equals(key));
-			if (current.key.equals(key)) {
-				var old = current.value;
-				current.value = value;
-				return old;
-			} else {
-				list.addLast(new Pair<K, V>(key, value));
-				return null;
-			}
-		}
-	} // TODO Enlarge table if it is too small
+		return null;
+	} // TODO Implement method
 	
 	public V remove(K key) throws IllegalArgumentException, NoSuchElementException {
 		if (key == null)
